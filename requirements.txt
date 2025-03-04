@@ -1,7 +1,6 @@
 streamlit
-PIL
+Pillow
 pandas
 numpy
-io
 matplotlib
 seaborn
