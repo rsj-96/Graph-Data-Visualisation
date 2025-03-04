@@ -60,24 +60,28 @@ with st.expander("Quick instruction📝"):
 file = st.file_uploader("Choose an '.xlsx' (excel) File", type = ['xlsx'])
 
 if file:
-    df = pd.read_excel(file)
-    st.write(df.head()) # displays dataframe
+    df = pd.read_excel(file)  # reads the file into the dataframe using pandas
+    st.write(df.head()) # displays dataframe in the streamlit application
+
     
-label_1 = st.text_input('Enter Label 1', '25 °C')
-label_2 =  st.text_input('Enter Label 2', '50 °C')
-title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C')
+    label_1 = st.text_input('Enter Label 1', '25 °C') # collects user inputs for labels using streamlit widget
+    label_2 =  st.text_input('Enter Label 2', '50 °C')
+    title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C') # collects user inputs for title using streamlit widget
 
+    colours = ['#39beea', '#ffa42e'] # specifis the colours, popped in a list so that it stays in order and doesn't assign it randomly
 
-colours = ['#39beea', '#ffa42e']
+    if not df.empty: # command checks if the dataframe is empty or not, if it's not it will progress with plotting the barchart
+    
+        fig, ax = plt.subplots()
+        ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
+        plt.xticks(rotation=90)
+        plt.title(title)
+        plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
 
-fig, ax = plt.subplots()
-ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
-plt.xticks(rotation=90)
-plt.title(title)
-plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
+        handles, labels = ax.get_legend_handles_labels() # gets the existing legend but need to define the ax first (see above) and also place this after the graph has been plotted!
+        new_labels = [label_1, label_2] # defining labels from the user inputs
+        ax.legend(handles=handles, labels=new_labels, loc='upper right', bbox_to_anchor=(1.2,1)) #handles is the original legend and colours that you have defined previously, and then labels is the new thing you have defined
 
-handles, labels = ax.get_legend_handles_labels() # gets the existing legend but need to define the ax first (see above) and also place this after the graph has been plotted!
-new_labels = [label_1, label_2]
-ax.legend(handles=handles, labels=new_labels, loc='upper right', bbox_to_anchor=(1.2,1)) #handles is the original legend and colours that you have defined previously, and then labels is the new thing you have defined
-
-st.pyplot(fig)
+        st.pyplot(fig) # plots the bar chart
+    else: # if the dataframe is empty the else pharse will occur
+        st.write('Please upload an excel file to proceed')
