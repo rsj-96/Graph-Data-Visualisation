@@ -3,5 +3,5 @@ PIL
 pandas
 numpy
 io
-matplotlib.pyplot
+matplotlib
 seaborn
