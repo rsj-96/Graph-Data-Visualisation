@@ -77,7 +77,7 @@ if file:
         ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
         plt.xticks(rotation=90, fontname='century gothic' )
         plt.xlabel(label_3, fontdict={'fontname':'century gothic'})
-        plt.ylabel(fontdict={'fontname':'century gothic'})
+        plt.ylabel('Solubility (mg/ml)',fontdict={'fontname':'century gothic'})
         plt.title(title, fontdict={'fontname':'century gothic'})
         plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
 
