@@ -64,9 +64,10 @@ if file:
     st.write(df.head()) # displays dataframe in the streamlit application
 
     
-    label_1 = st.text_input('Enter Label 1', '25 °C') # collects user inputs for labels using streamlit widget
-    label_2 =  st.text_input('Enter Label 2', '50 °C')
+    label_1 = st.text_input('Enter Temperature 1', '25 °C') # collects user inputs for labels using streamlit widget
+    label_2 =  st.text_input('Enter Temperature 2', '50 °C')
     title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C') # collects user inputs for title using streamlit widget
+    label_3 = st.text_input('Enter x_axis label', 'Solvent')
 
     colours = ['#39beea', '#ffa42e'] # specifis the colours, popped in a list so that it stays in order and doesn't assign it randomly
 
@@ -74,8 +75,10 @@ if file:
     
         fig, ax = plt.subplots()
         ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
-        plt.xticks(rotation=90)
-        plt.title(title)
+        plt.xticks(rotation=90, fontname='century gothic' )
+        plt.xlabel(label_3, fontdict={'fontname':'century gothic'})
+        plt.ylabel(fontdict={'fontname':'century gothic'})
+        plt.title(title, fontdict={'fontname':'century gothic'})
         plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
 
         handles, labels = ax.get_legend_handles_labels() # gets the existing legend but need to define the ax first (see above) and also place this after the graph has been plotted!
