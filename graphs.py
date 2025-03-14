@@ -6,7 +6,10 @@ import io
 from io import BytesIO
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
-import seaborn as sns 
+import seaborn as sns
+import os
+
+st.title(os.getcwd())
 
 # Name of Script
 st.title('Data Visualisation of Solubility Graphs')  # Replace with your script name
