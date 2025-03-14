@@ -65,7 +65,7 @@ file = st.file_uploader("Choose an '.xlsx' (excel) File", type = ['xlsx'])
 
 # load century gothic font:
 
-font_path = "/mount/src/solubility-graphs/fonts/GOTHIC.TTF" 
+font_path = "/mount/src/solubility-graphs/GOTHIC.TTF" 
 font_prop = fm.FontProperties(fname=font_path)
 
 # Apply the font globally for all plots
