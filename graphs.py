@@ -59,6 +59,14 @@ with st.expander("Quick instruction📝"):
 
 file = st.file_uploader("Choose an '.xlsx' (excel) File", type = ['xlsx'])
 
+# load century gothic font:
+
+font_path = "Gothic.TTF" 
+font_prop = fm.FontProperties(fname=font_path)
+
+# Apply the font globally for all plots
+plt.rcParams['font.family'] = font_prop.get_name()
+
 if file:
     df = pd.read_excel(file)  # reads the file into the dataframe using pandas
     st.write(df.head()) # displays dataframe in the streamlit application
@@ -75,15 +83,14 @@ if file:
     
         fig, ax = plt.subplots()
         ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
-        plt.xticks(rotation=90, fontname='century gothic' )
-        plt.xlabel(label_3, fontdict={'fontname':'century gothic'})
-        plt.ylabel('Solubility (mg/ml)',fontdict={'fontname':'century gothic'})
-        plt.title(title, fontdict={'fontname':'century gothic'})
+        plt.xticks(rotation=90, fontproperties=font_prop)
+        plt.yticks(fontproperties=font_prop)
+        plt.title(title, fontproperties=font_prop)
         plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
 
         handles, labels = ax.get_legend_handles_labels() # gets the existing legend but need to define the ax first (see above) and also place this after the graph has been plotted!
         new_labels = [label_1, label_2] # defining labels from the user inputs
-        ax.legend(handles=handles, labels=new_labels, loc='upper right', bbox_to_anchor=(1.2,1)) #handles is the original legend and colours that you have defined previously, and then labels is the new thing you have defined
+        ax.legend(handles=handles, labels=new_labels, loc='upper right', bbox_to_anchor=(1.2,1), prop=font_prop) #handles is the original legend and colours that you have defined previously, and then labels is the new thing you have defined
 
         st.pyplot(fig) # plots the bar chart
     else: # if the dataframe is empty the else pharse will occur
