@@ -86,7 +86,7 @@ if file:
     if not df.empty: # command checks if the dataframe is empty or not, if it's not it will progress with plotting the barchart
     
         fig, ax = plt.subplots()
-        ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
+        ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours, fontproperties=font_prop)
         plt.xticks(rotation=90, fontproperties=font_prop)
         plt.yticks(fontproperties=font_prop)
         plt.title(title, fontproperties=font_prop)
