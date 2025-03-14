@@ -5,6 +5,7 @@ import numpy as np
 import io
 from io import BytesIO
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 import seaborn as sns 
 
 # Name of Script
