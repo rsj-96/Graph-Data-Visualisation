@@ -18,7 +18,7 @@ graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen'])
 
 # Description
 st.markdown('''
-    This application helps to Data in a graphical forms
+    This application helps to visualise data in graphical forms
     ''')  #Small description of what the application does
 
 
