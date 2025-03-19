@@ -138,7 +138,7 @@ if graph =='Reaction Screen':
             if labelling: 
                 for i, row in df.iterrows():
                     value=row.iloc[2]
-                    plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontdict={'fontname':'century gothic'}, fontsize=9)
+                    plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
             else:
                 pass
 
