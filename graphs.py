@@ -211,6 +211,8 @@ else:
             
             fig, ax = plt.subplots()
             ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
+            plt.xlabel(fontproperties=font_prop)
+            plt.ylabel(fontproperties=font_prop)
             plt.xticks(rotation=90, fontproperties=font_prop)
             plt.yticks(fontproperties=font_prop)
             plt.title(title, fontproperties=font_prop)
