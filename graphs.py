@@ -146,7 +146,7 @@ if graph =='Reaction Screen':
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
 
-        
+        st.pyplot(plt.gcf()) # plots the bar chart
         
     
 else:
