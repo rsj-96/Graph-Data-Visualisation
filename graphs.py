@@ -79,6 +79,7 @@ if graph =='Reaction Screen':
         x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
            
         title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
+        size = st.text_input('Enter labelling fontsize', 9)
         
         #Dynamic Variables
         
@@ -131,7 +132,7 @@ if graph =='Reaction Screen':
             
             for i, row in df.iterrows():
                 value=row.iloc[2]
-                plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontdict={'fontname':'century gothic'}, fontsize=9)
+                plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontdict=font_prop, fontsize=size)
 
                 
             st.pyplot(plt.gcf()) # plots the bar chart
