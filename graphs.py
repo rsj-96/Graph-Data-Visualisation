@@ -9,7 +9,7 @@ import matplotlib.font_manager as fm
 import seaborn as sns
 import os
 
-# print(os.getcwd()) # finds files path of repository
+print(os.getcwd()) # finds files path of repository
 
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
@@ -20,8 +20,6 @@ graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen'])
 st.markdown('''
     This application helps to Data in a graphical forms
     ''')  #Small description of what the application does
-
-
 
 
 font_path = "Gothic.TTF" 
