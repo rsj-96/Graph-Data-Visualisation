@@ -9,7 +9,7 @@ import matplotlib.font_manager as fm
 import seaborn as sns
 import os
 
-st.write(print(os.getcwd())) # finds files path of repository
+#st.write(print(os.getcwd())) # finds files path of repository
 
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
@@ -22,7 +22,7 @@ st.markdown('''
     ''')  #Small description of what the application does
 
 
-font_path = "Gothic.TTF" 
+font_path = "/mount/src/solubility-graphs/GOTHIC.TTF"
 font_prop = fm.FontProperties(fname=font_path)
 
 # Apply the font globally for all plots
