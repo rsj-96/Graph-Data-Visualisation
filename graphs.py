@@ -9,7 +9,7 @@ import matplotlib.font_manager as fm
 import seaborn as sns
 import os
 
-print(os.getcwd()) # finds files path of repository
+st.write(print(os.getcwd())) # finds files path of repository
 
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
