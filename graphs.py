@@ -34,7 +34,6 @@ if graph =='Reaction Screen':
 
     data = {
             "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
-            "Time": ['1 h', '3 h', '5 h'],
             "SM": [10, 50, 80],
             'Product' : [70, 40, 10],
             'Imp 1' : [5, 3, 10],
@@ -63,7 +62,7 @@ if graph =='Reaction Screen':
     with st.expander("Quick instruction📝"): 
         st.markdown('''
                 1. Download Screen sheet template or excel file with a similar format. Columns beginning with imp-x or ukn-x will be combined into a new column named Impurities.
-                2. For named reagents in a reaction label in the order SM, P, intermediate/impurity, etc. Please note names of variables need to be typed as they are in the excel file.
+                2. For named reagents in a reaction label in the order SM, P, intermediate/impurity, etc. Please note names of Reagents/Products need to be typed as they are in the excel file.
                 3. Screen bar chart will be generated :)
                 4. Any questions please speak with RJ
                 ''')
@@ -84,10 +83,10 @@ if graph =='Reaction Screen':
         #Dynamic Variables
         
         variables = []
-        num_variables = st.number_input("Number of variables", min_value=1, max_value=20, value=2, step=1)
+        num_variables = st.number_input("Number of Products/Reagents", min_value=1, max_value=20, value=2, step=1)
         
         for x in range(num_variables):
-            var_name = st.text_input(f'Enter variable {x+1} name', f'Variable {x+1}')
+            var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
             variables.append(var_name)
             
         for var in variables:
@@ -96,6 +95,12 @@ if graph =='Reaction Screen':
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
                 
+        labelling = st.checkbox('Label Product LCAP')
+        if labelling:
+            st.write('Product bar will be labelled')
+            
+        st.write(' ')
+        st.write(' ')
         
         legend = variables + ['Impurities']
         
@@ -105,7 +110,7 @@ if graph =='Reaction Screen':
            
             df.replace('-', 0, inplace=True)
  
-            imp_cols = [col for col in df.columns if col.startswith('imp') or col.startswith('Imp') or col.startswith('imp ') or col.startswith('Imp ') or col.startswith('UnK') or col.startswith('unk')] # select columns starting with a certain word
+            imp_cols = [col for col in df.columns if col.startswith('imp') or col.startswith('Imp') or col.startswith('imp ') or col.startswith('Imp ') or col.startswith('Unk') or col.startswith('unk')] # select columns starting with a certain word
 
             df['Impurities'] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
 
@@ -129,13 +134,14 @@ if graph =='Reaction Screen':
             for y, row in df.iterrows():
                 value = row[variables[0]]  # Access the first variable
                 bar1.append(value) 
-            
-            for i, row in df.iterrows():
-                value=row.iloc[2]
-                plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
+           
+            if labelling: 
+                for i, row in df.iterrows():
+                    value=row.iloc[2]
+                    plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontdict={'fontname':'century gothic'}, fontsize=9)
+            else:
+                pass
 
-                
-            st.pyplot(plt.gcf()) # plots the bar chart
             
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
