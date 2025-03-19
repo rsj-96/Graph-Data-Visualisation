@@ -203,7 +203,7 @@ else:
         label_1 = st.text_input('Enter Label 1', '25 °C') # collects user inputs for labels using streamlit widget
         label_2 =  st.text_input('Enter Label 2', '50 °C')
         title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C') # collects user inputs for title using streamlit widget
-        x-axis = st.text_input('Enter x-axis title', 'Solvent')
+        x_axis = st.text_input('Enter x-axis title', 'Solvent')
 
         colours = ['#39beea', '#ffa42e'] # specifies the colours, popped in a list so that it stays in order and doesn't assign it randomly
 
@@ -212,7 +212,7 @@ else:
             
             fig, ax = plt.subplots()
             ax = sns.barplot(x='Solvent', y='Solubility (mg/ml)', hue='Temperature', data=df, palette=colours)
-            plt.xlabel(x-axis,fontproperties=font_prop)
+            plt.xlabel(x_axis,fontproperties=font_prop)
             plt.ylabel('Solubility (mg/ml)',fontproperties=font_prop)
             plt.xticks(rotation=90, fontproperties=font_prop)
             plt.yticks(fontproperties=font_prop)
