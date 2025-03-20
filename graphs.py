@@ -14,7 +14,7 @@ import os
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen'])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen - Impurities Combined', 'Reaction Screen - Specific'])
 
 # Description
 st.markdown('''
@@ -28,7 +28,9 @@ font_prop = fm.FontProperties(fname=font_path)
 # Apply the font globally for all plots
 plt.rcParams['font.family'] = font_prop.get_name()
 
-if graph =='Reaction Screen':
+# REACTION SCREEN WHERE THE IMPURITIES ARE COMBINED
+
+if graph =='Reaction Screen - Impurities Combined':
     
     #Screen Sheet Download
 
@@ -94,10 +96,15 @@ if graph =='Reaction Screen':
                 st.write(" ")
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
+        # Tick boxes for labelling:
+        
+        labelling = {}
+        
+        for var in variables:
+            labelling[var] = st.checkbox(f"Label {var} LCAP")
+            
                 
-        labelling = st.checkbox('Label Product LCAP')
-        if labelling:
-            st.write('Product bar will be labelled')
+        labelling_imps = st.checkbox("Label Impurities LCAP")
             
         st.write(' ')
         st.write(' ')
@@ -130,25 +137,175 @@ if graph =='Reaction Screen':
             plt.legend(loc='upper left', bbox_to_anchor=(1,1), prop=font_prop, labels=legend)
             plt.title(title, fontproperties=font_prop)
 
-            bar1 = []
-            for y, row in df.iterrows():
-                value = row[variables[0]]  # Access the first variable
-                bar1.append(value) 
-           
-            if labelling: 
-                for i, row in df.iterrows():
-                    value=row.iloc[2]
-                    plt.text(i,(value/2)+bar1[i], f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
-            else:
-                pass
+            bars = []
+            
+            for var in variables:
+                bar_heights = [row[var] if var in row else 0 for _, row in df.iterrows()]
+                bars.append(bar_heights)
 
+            # Automated labeling using the dictionary of labeling preferences
+            for idx, var in enumerate(variables):
+                if labelling[var]: 
+                    for i, row in df.iterrows():
+                        value = row[var]
+                    # Calculate cumulative bar height for stacked bars
+                        cumulative_height = sum(bars[j][i] for j in range(idx))
+                        plt.text(i, (value / 2) + cumulative_height, f'{value:.2f}', ha='center', 
+                        fontproperties=font_prop, fontsize=size)
+                        
+            # For labelling the impurities:
+            
+            bars_imps = []
+            for var in variables + ['Impurities']:
+                bar_imp_heights = [row[var] if var in row else 0 for _, row in df.iterrows()]
+                bars_imps.append(bar_heights)
+        
+            if labelling_imps:
+                for i, row in df.iterrows():
+            # Calculate cumulative height for Impurities
+                    cumulative_height_imps = 0
+                    for j in range(len(variables)):
+                        cumulative_height_imps += row[variables[j]]  # Sum up all the previous bars before Impurities
+                        value = row['Impurities']
+        
+                # Now we can position the Impurities text on top of the cumulative bar stack
+                    plt.text(i, (value / 2) + cumulative_height_imps, f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
+
+            st.pyplot(plt.gcf()) # plots the bar chart
             
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
 
-        st.pyplot(plt.gcf()) # plots the bar chart
-        
+# SPECIFIC REACTION SCREEN - ALL COLUMNS MUST BE SPECIFIED
+
+elif   graph =='Reaction Screen - Specific':
     
+    #Screen Sheet Download
+
+    data = {
+            "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
+            "SM": [10, 50, 80],
+            'Product' : [70, 40, 10],
+            'Imp 1' : [5, 3, 10],
+            'Imp 2' : [15, 7, 0],
+        }  # Random data that can be replaced
+    
+    excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
+
+    excel_file = io.BytesIO() # in-memory binary stream to store the excel file - will be written into a stream rather than a file to be saved on a disk
+
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer: # pd.ExcelWriter is a pandas function for converting data into an excel file
+        excel_template.to_excel(writer, index=False, sheet_name='Sheet1') # converts the stream file to an excel file
+
+    
+    excel_file.seek(0) #  resets pointer back to the beginning
+    
+    # Downloader for template file
+
+    st.download_button(
+                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
+    with st.expander("Quick instruction📝"): 
+        st.markdown('''
+                1. Download Screen sheet template or excel file with a similar format.
+                2. For named reagents in a reaction label in the order SM, P, intermediate/impurity, etc. Please note names of Reagents/Products need to be typed as they are in the excel file and each excel column needs to be specified.
+                3. Screen bar chart will be generated :)
+                4. Any questions please speak with RJ
+                ''')
+    
+    file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    if file:
+        df = pd.read_excel(file)  # reads the file into the dataframe using pandas
+        
+        st.write('Preview of Excel file')
+        st.write(df.head()) # displays dataframe in the streamlit application
+
+    
+        x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
+           
+        title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
+        
+        size = st.text_input('Enter label font zize', 9)
+        
+        #Dynamic Variables
+        
+        variables = []
+        num_variables = st.number_input("Number of Products/Reagents", min_value=2, max_value=20, value=2, step=1)
+        
+        for x in range(num_variables):
+            var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+            variables.append(var_name)
+            
+        for var in variables:
+            if var in df.columns:
+                st.write(" ")
+            else:
+                st.write(f"Warning: Column '{var}' does not exist in File")
+                
+        # Tick boxes:
+        
+        labelling = {}
+        
+        for var in variables:
+            labelling[var] = st.checkbox(f"Label {var} LCAP")
+            
+                
+            
+        st.write(' ')
+        st.write(' ')
+        legend = variables
+        
+        colours_specific1 = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#F54105', '#ef476f', '#ff8fa3','#dabfff', '#B185CD', '#A85BBE', '#5865C5', '#5894C4', '#71B3CB']
+        
+        
+        if not df.empty:
+           
+            df.replace('-', 0, inplace=True)
+ 
+            selected_columns = ['Conditions'] + [var for var in variables if var in df.columns]
+            df = df.loc[:, selected_columns] # how can I automate this selection?
+            
+            st.write('Preview of Data for Screen Chart')
+            st.write(df.head())
+
+            df.plot.bar(x='Conditions', stacked=True, color=colours_specific1)
+            plt.xlabel(x_axis, fontproperties=font_prop)
+            plt.ylabel('LCAP / %', fontproperties=font_prop)
+            plt.xticks(fontproperties=font_prop)
+            plt.yticks(fontproperties=font_prop)
+            plt.legend(loc='upper left', bbox_to_anchor=(1,1), prop=font_prop, labels=legend)
+            plt.title(title, fontproperties=font_prop)
+
+            
+            
+            bars = []
+            
+            for var in variables:
+                bar_heights = [row[var] if var in row else 0 for _, row in df.iterrows()]
+                bars.append(bar_heights)
+
+            # Automated labeling using the dictionary of labeling preferences
+            for idx, var in enumerate(variables):
+                if labelling[var]: 
+                    for i, row in df.iterrows():
+                        value = row[var]
+                    # Calculate cumulative bar height for stacked bars
+                        cumulative_height = sum(bars[j][i] for j in range(idx))
+                        plt.text(i, (value / 2) + cumulative_height, f'{value:.2f}', ha='center', 
+                        fontproperties=font_prop, fontsize=size)
+                        
+            st.pyplot(plt.gcf()) # plots the bar chart
+            
+        else: # if the dataframe is empty the else phrase will occur
+            st.write('Please upload an excel file to proceed')
+                        
+        
+# SOLUBILITY GRAPHS        
+ 
 else:
     
     # Solubility sheet download
