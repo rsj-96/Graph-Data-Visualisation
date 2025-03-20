@@ -93,7 +93,7 @@ if graph =='Reaction Screen - Impurities Combined':
             
         for var in variables:
             if var in df.columns:
-                st.write(" ")
+                pass
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
         # Tick boxes for labelling:
@@ -242,7 +242,7 @@ elif   graph =='Reaction Screen - Specific':
             
         for var in variables:
             if var in df.columns:
-                st.write(" ")
+                pass
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
                 
@@ -252,8 +252,6 @@ elif   graph =='Reaction Screen - Specific':
         
         for var in variables:
             labelling[var] = st.checkbox(f"Label {var} LCAP")
-            
-                
             
         st.write(' ')
         st.write(' ')
