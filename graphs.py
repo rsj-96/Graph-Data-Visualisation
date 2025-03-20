@@ -215,7 +215,7 @@ elif   graph =='Reaction Screen - Specific':
     with st.expander("Quick instruction📝"): 
         st.markdown('''
                 1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
-                2.	For this data visualiser, each individual column of the spreadsheet needs to be specified in the Products/Reagents boxes.
+                2.	For this data visualiser, _each individual column of the spreadsheet_ needs to be specified in the Products/Reagents boxes.
                 3.	If needed alter the _x-axis label_, _Chart title_, and _font size_. If you do not was an x-axis or chart title leave the box empty.
                 4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
                 5.	If you would like a LCAP value for your starting material or product to be added to the chart tick the corresponding checkbox
