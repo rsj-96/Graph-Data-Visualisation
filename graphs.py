@@ -63,10 +63,13 @@ if graph =='Reaction Screen - Impurities Combined':
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
-                1. Download Screen sheet template or excel file with a similar format. Columns beginning with imp-x or ukn-x will be combined into a new column named Impurities.
-                2. For named reagents in a reaction label in the order SM, P, intermediate/impurity, etc. Please note names of Reagents/Products need to be typed as they are in the excel file.
-                3. Screen bar chart will be generated :)
-                4. Any questions please speak with RJ
+                1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
+                2.	For this data visualiser, a column beginning with _Imp_ or _Unk_ will be combined into an ‘Impurities column’. For this reason, _known_ impurities should be named something else if you would like them to be plotted separately.
+                3.	If needed alter the _x-axis label_, _Chart title_, and _font size_. If you do not was an x-axis or chart title leave the box empty.
+                4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
+                5.	If you would like a LCAP value for your starting material or product to be added to the chart tick the corresponding checkbox
+                6.	A Stacked bar chart of your screening reaction will be generated.
+                7.  Any questions or feedback please speak to RJ
                 ''')
     
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
@@ -211,10 +214,13 @@ elif   graph =='Reaction Screen - Specific':
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
-                1. Download Screen sheet template or excel file with a similar format.
-                2. For named reagents in a reaction label in the order SM, P, intermediate/impurity, etc. Please note names of Reagents/Products need to be typed as they are in the excel file and each excel column needs to be specified.
-                3. Screen bar chart will be generated :)
-                4. Any questions please speak with RJ
+                1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
+                2.	For this data visualiser, each individual column of the spreadsheet needs to be specified in the Products/Reagents boxes.
+                3.	If needed alter the _x-axis label_, _Chart title_, and _font size_. If you do not was an x-axis or chart title leave the box empty.
+                4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
+                5.	If you would like a LCAP value for your starting material or product to be added to the chart tick the corresponding checkbox
+                6.	A Stacked bar chart of your screening reaction will be generated.
+                7.  Any questions or feedback please speak to RJ
                 ''')
     
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
