@@ -80,7 +80,7 @@ if graph =='Reaction Screen - Impurities Combined':
         x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
            
         title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
-        size = st.number_input('Enter label font size', 9, max_value=20, min_value= 1)
+        size = st.number_input('Enter label font size', 9, max_value=20)
         
         #Dynamic Variables
         
@@ -229,7 +229,7 @@ elif   graph =='Reaction Screen - Specific':
            
         title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
         
-        size = st.number_input('Enter label font size', 9, max_value=20, min_value= 1)
+        size = st.number_input('Enter label font size', 9, max_value=20)
         
         #Dynamic Variables
         
