@@ -523,14 +523,15 @@ else:
             ax = axes[r]
             wedges, texts, autotexts = ax.pie(row[1:], autopct = '%1.1f%%', colors=colours, startangle=360)
             # texts = labels of each wedge, wedges = objects representing pie slices, autotexts = text annotations inside the wedges
-            ax.set_title(row[0], fontsize=30)
+            #ax.set_title(row[0],fontsize=32, fontproperties=None)
+            ax.text(0.5, 1, row[0], fontsize=22, ha='center', va='bottom', transform=ax.transAxes)
             wedges.extend(wedges) # appends individual wedges into wedges list and is used for making the global legend
             
+
             
             for i, autotext in enumerate(autotexts):
                 value = float(row[i+1])  # Get the value corresponding to this wedge
                 
-                        
                 # Set label size and position
                 autotext.set_fontsize(size_label)
                 
@@ -546,7 +547,7 @@ else:
                     
                     autotext.set_position((scaled_x, scaled_y))  # Push it out a bit
                     autotext.set_ha("center")  # Center-align the text
-                    ax.annotate(' ', xy=(x, y), xytext=(x*2.1, y*2.1), arrowprops=dict(arrowstyle="-", lw=1, color='black')
+                    ax.annotate(' ', xy=(x, y), xytext=(x*2.1, y*2.1), arrowprops=dict(arrowstyle="-", lw=0.7, color='black')
                     )
                     
         # wedge-pie chart slices, texts-objects representing labels auto texts-obects representing percentages
@@ -554,8 +555,9 @@ else:
         for r in range(num_rows, len(axes)):  #will hide extra plots
             axes[r].set_visible(False)
         
-        fig.legend(wedges[:len(labels)], labels, loc="upper left",bbox_to_anchor=(1,1), fontsize=30)
+        fig.legend(wedges[:len(labels)], labels, loc="upper left",bbox_to_anchor=(1,1),fontsize=25)
 
+        plt.subplots_adjust(top=1)
         plt.tight_layout(h_pad=5) # change distance between pie plots
         
         st.pyplot(fig)
