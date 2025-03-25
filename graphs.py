@@ -503,7 +503,7 @@ else:
         # Defining plot pies
         num_rows = len(df)
         num_cols = min(num_rows, 4) #max of 4 columns per row # could probablt make a selection thing for this!
-        num_subplot_rows = np.ceil(len(df) / 4).astype(int)) # calculates
+        num_subplot_rows = np.ceil(len(df) / 4).astype(int) # calculates
         
 
         # Best to use subplots for pie charts
