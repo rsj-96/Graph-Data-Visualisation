@@ -14,7 +14,7 @@ import os
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', Reaction Screen Pie Chart - Impurities Combined])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined'])
 
 # Description
 st.markdown('''
