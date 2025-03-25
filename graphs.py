@@ -556,8 +556,8 @@ else:
         
         fig.legend(wedges[:len(labels)], labels, loc="upper left",bbox_to_anchor=(1,1), fontsize=30)
 
-    
-        plt.tight_layout(h_pad=5) # change distance between pie plots
+        plt.subplots_adjust(hspace=0.5, wspace=0.5)
+        plt.tight_layout() # change distance between pie plots
         
         st.pyplot(fig)
 
