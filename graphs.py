@@ -435,7 +435,7 @@ else:
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )  # Makes it so you can download the excel file with the streamlit widget
     
-    with st.expander("How to Use📝"): 
+    with st.expander("Quick instruction📝"): 
         st.markdown('''
                 1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing and will be the title for each pie chart. If you do not want a tile for the pie chart fill the conditions column with a space(' ').
                 2.	For this data visualiser, a column beginning with _Imp_ or _Unk_ will be combined into an ‘Impurities column’. For this reason, _known_ impurities should be named something else if you would like them to be plotted separately.
