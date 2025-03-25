@@ -14,7 +14,7 @@ import os
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen - Impurities Combined', 'Reaction Screen - Specific'])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', Reaction Screen Pie Chart - Impurities Combined])
 
 # Description
 st.markdown('''
@@ -30,7 +30,7 @@ plt.rcParams['font.family'] = font_prop.get_name()
 
 # REACTION SCREEN WHERE THE IMPURITIES ARE COMBINED
 
-if graph =='Reaction Screen - Impurities Combined':
+if graph =='Reaction Screen Bar Chart - Impurities Combined':
     
     #Screen Sheet Download
 
@@ -65,7 +65,7 @@ if graph =='Reaction Screen - Impurities Combined':
         st.markdown('''
                 1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
                 2.	For this data visualiser, a column beginning with _Imp_ or _Unk_ will be combined into an ‘Impurities column’. For this reason, _known_ impurities should be named something else if you would like them to be plotted separately.
-                3.	If needed alter the _x-axis label_, _Chart title_, and _font size_. If you do not want an x-axis or chart title leave the box empty.
+                3.	If needed alter the _x-axis label_, _Chart title_, _font size_ and _Chart colours_. If you do not want an x-axis or chart title leave the box empty, unaltered colours will be left as the default colour.
                 4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
                 5.	If you would like a LCAP value for your starting material or product to be added to the chart tick the corresponding checkbox
                 6.	A Stacked bar chart of your screening reaction will be generated.
@@ -89,10 +89,21 @@ if graph =='Reaction Screen - Impurities Combined':
         
         variables = []
         num_variables = st.number_input("Number of Products/Reagents", min_value=1, max_value=20, value=2, step=1)
+        default_colours = ['#118ab2','#06d6a0','#ffd166','#dabfff','#f48c06', '#ff8fa3']
+        colours = []
         
         for x in range(num_variables):
-            var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
-            variables.append(var_name)
+            col1, col2 = st.columns([2,1])
+            with col1:
+                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                variables.append(var_name)
+            with col2:
+                default = default_colours[x % len(default_colours)]
+                colour = st.color_picker(f'Pick a colour for {x+1}', default)
+                colours.append(colour)
+        
+        imp_colour = st.color_picker('Pick a colour for Impurities', '#ff8fa3')
+        colours.append(imp_colour)
             
         for var in variables:
             if var in df.columns:
@@ -114,7 +125,7 @@ if graph =='Reaction Screen - Impurities Combined':
         
         legend = variables + ['Impurities']
         
-        colours_specific = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#ef476f', '#ff8fa3', '#dabfff']
+        #colours_specific = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#ef476f', '#ff8fa3', '#dabfff']
         
         if not df.empty:
            
@@ -132,7 +143,7 @@ if graph =='Reaction Screen - Impurities Combined':
             st.write('Preview of Data for Screen Chart')
             st.write(df.head())
 
-            df.plot.bar(x='Conditions', stacked=True, color=colours_specific)
+            df.plot.bar(x='Conditions', stacked=True, color=colours)
             plt.xlabel(x_axis, fontproperties=font_prop)
             plt.ylabel('LCAP / %', fontproperties=font_prop)
             plt.xticks(fontproperties=font_prop)
@@ -181,7 +192,7 @@ if graph =='Reaction Screen - Impurities Combined':
 
 # SPECIFIC REACTION SCREEN - ALL COLUMNS MUST BE SPECIFIED
 
-elif   graph =='Reaction Screen - Specific':
+elif   graph =='Reaction Screen Bar Chart - Specific':
     
     #Screen Sheet Download
 
@@ -216,7 +227,7 @@ elif   graph =='Reaction Screen - Specific':
         st.markdown('''
                 1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
                 2.	For this data visualiser, _each individual column of the spreadsheet_ needs to be specified in the Products/Reagents boxes.
-                3.	If needed alter the _x-axis label_, _Chart title_, and _font size_. If you do not want an x-axis or chart title leave the box empty.
+                3.	If needed alter the _x-axis label_, _Chart title_, _font size_ and _Chart colours_. If you do not want an x-axis or chart title leave the box empty, unaltered colours will be left as the default colours.
                 4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
                 5.	If you would like a LCAP value for your starting material or product to be added to the chart tick the corresponding checkbox
                 6.	A Stacked bar chart of your screening reaction will be generated.
@@ -241,10 +252,18 @@ elif   graph =='Reaction Screen - Specific':
         
         variables = []
         num_variables = st.number_input("Number of Products/Reagents", min_value=2, max_value=20, value=2, step=1)
+        default_colours = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#F54105', '#ef476f', '#ff8fa3','#dabfff', '#B185CD', '#A85BBE', '#5865C5', '#5894C4', '#71B3CB']
+        colours = []
         
         for x in range(num_variables):
-            var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
-            variables.append(var_name)
+            col1, col2 = st.columns([2,1])
+            with col1:
+                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                variables.append(var_name)
+            with col2:
+                default = default_colours[x%len(default_colours)]
+                colour = st.color_picker(f'Pick a colour for {x+1}', default)
+                colours.append(colour)
             
         for var in variables:
             if var in df.columns:
@@ -263,7 +282,7 @@ elif   graph =='Reaction Screen - Specific':
         st.write(' ')
         legend = variables
         
-        colours_specific1 = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#F54105', '#ef476f', '#ff8fa3','#dabfff', '#B185CD', '#A85BBE', '#5865C5', '#5894C4', '#71B3CB']
+        # colours_specific1 = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#F54105', '#ef476f', '#ff8fa3','#dabfff', '#B185CD', '#A85BBE', '#5865C5', '#5894C4', '#71B3CB']
         
         
         if not df.empty:
@@ -276,7 +295,7 @@ elif   graph =='Reaction Screen - Specific':
             st.write('Preview of Data for Screen Chart')
             st.write(df.head())
 
-            df.plot.bar(x='Conditions', stacked=True, color=colours_specific1)
+            df.plot.bar(x='Conditions', stacked=True, color=colours)
             plt.xlabel(x_axis, fontproperties=font_prop)
             plt.ylabel('LCAP / %', fontproperties=font_prop)
             plt.xticks(fontproperties=font_prop)
@@ -310,7 +329,7 @@ elif   graph =='Reaction Screen - Specific':
         
 # SOLUBILITY GRAPHS        
  
-else:
+elif graph == 'Solubility Study':
     
     # Solubility sheet download
 
@@ -387,3 +406,156 @@ else:
             st.pyplot(fig) # plots the bar chart
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
+
+else:
+    data = {
+            "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
+            "SM": [10, 50, 80],
+            'Product' : [70, 40, 10],
+            'Imp 1' : [5, 3, 10],
+            'Imp 2' : [15, 7, 0],
+        }  # Random data that can be replaced
+    
+    excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
+
+    excel_file = io.BytesIO() # in-memory binary stream to store the excel file - will be written into a stream rather than a file to be saved on a disk
+
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer: # pd.ExcelWriter is a pandas function for converting data into an excel file
+        excel_template.to_excel(writer, index=False, sheet_name='Sheet1') # converts the stream file to an excel file
+
+    
+    excel_file.seek(0) #  resets pointer back to the beginning
+    
+    # Downloader for template file
+
+    st.download_button(
+                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
+    with st.expander("How to Use📝"): 
+        st.markdown('''
+                1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing and will be the title for each pie chart. If you do not want a tile for the pie chart fill the conditions column with a space(' ').
+                2.	For this data visualiser, a column beginning with _Imp_ or _Unk_ will be combined into an ‘Impurities column’. For this reason, _known_ impurities should be named something else if you would like them to be plotted separately.
+                3.	If needed alter the _font size_ and _chart colours_. Chart colours will be left as the default if unchanged
+                4.	Select the number of _Products/Reagents_ to be plotted. Please note that Product/reagent values need to correspond _exactly_ with what is typed in the spreadsheet to be plotted.
+                5.	Pie chart of your screening reaction will be generated.
+                6.  Any questions or feedback please speak to RJ
+                ''')
+    
+    file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    if file:
+        df = pd.read_excel(file)  # reads the file into the dataframe using pandas
+        
+        st.write('Preview of Excel file')
+        st.write(df.head()) # displays dataframe in the streamlit application
+
+        #Dynamic Variables
+        
+        default_colours = ['#118ab2','#06d6a0','#ffd166','#dabfff','#f48c06', '#ff8fa3']
+        
+        variables = []
+        num_variables = st.number_input("Number of Products/Reagents", min_value=1, max_value=20, value=2, step=1)
+        colours = []
+        
+        for x in range(num_variables):
+            col1, col2 = st.columns([2,1]) # inside[] is the column widths
+            with col1:
+                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                variables.append(var_name)
+            
+            with col2:
+                default = default_colours[x%len(default_colours)]
+                colour = st.color_picker(f'Pick a colour for {x+1}', default)
+                colours.append(colour)
+        
+        imp_colour = st.color_picker('Pick a colour for Impurities', '#ff8fa3')
+        colours.append(imp_colour)
+        
+        for var in variables:
+            if var in df.columns:
+                pass
+            else:
+                st.write(f"Warning: Column '{var}' does not exist in File")
+        
+        # datafram rearrangement (collecting all the imps together):
+        
+        df.replace('-', 0, inplace=True)
+ 
+        imp_cols = [col for col in df.columns if col.startswith('imp') or col.startswith('Imp') or col.startswith('imp ') or col.startswith('Imp ') or col.startswith('Unk') or col.startswith('unk')] # select columns starting with a certain word
+
+        df['Impurities'] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
+
+        df.drop(columns=imp_cols, inplace=True) # gets rid of the old columns that were used in the combined column
+
+        selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + ['Impurities']
+        df = df.loc[:, selected_columns] 
+    
+        #inputs for labels
+        
+        size_label = st.number_input('Enter Pie label font size', min_value=1, max_value=50, value=30)
+        
+        #segment = st.checkbox("Label Segments with")
+        
+        # Defining plot pies
+        num_rows = len(df)
+        num_cols = min(num_rows, 4) #max of 4 columns per row # could probablt make a selection thing for this!
+        num_subplot_rows = math.ceil(num_rows/4) # calculates
+        
+
+        # Best to use subplots for pie charts
+
+        fig, axes = plt.subplots(num_subplot_rows, num_cols, figsize=(25,7*num_subplot_rows)) # 1 row and df columns
+        #fig, axes = returns two objects. fig-overall figure, ax- an array of individual objects (one for each pie chart)
+        
+        axes = axes.flatten() # makes it so you don't get that numpy error when you want additional rows
+
+        labels = df.columns[1:] # gets column names but ignores the first one for labelling
+        wedges = [] # empty list to store the pie chart segments
+        autotexts_all = []
+
+        #colours = ['#118ab2','#06d6a0','#ffd166','#ff8fa3','#dabfff','#f48c06']
+
+        for r, (index, row) in enumerate(df.iterrows()): # r - index of the row but this whole line loops over each row of df index is row index
+            ax = axes[r]
+            wedges, texts, autotexts = ax.pie(row[1:], autopct = '%1.1f%%', colors=colours, startangle=360)
+            # texts = labels of each wedge, wedges = objects representing pie slices, autotexts = text annotations inside the wedges
+            ax.set_title(row[0], fontsize=30)
+            wedges.extend(wedges) # appends individual wedges into wedges list and is used for making the global legend
+            
+            
+            for i, autotext in enumerate(autotexts):
+                value = float(row[i+1])  # Get the value corresponding to this wedge
+                
+                        
+                # Set label size and position
+                autotext.set_fontsize(size_label)
+        
+                # Adjust position: inside if large enough, outside if too small
+                if value > 5.5: 
+                    autotext.set_horizontalalignment("center")
+                else:
+            # Move text outside for small segments
+                    x, y = autotext.get_position()
+                    scaled_x = 2.5 * x
+                    scaled_y = 2.5*y
+                    
+                    autotext.set_position((scaled_x, scaled_y))  # Push it out a bit
+                    autotext.set_ha("center")  # Center-align the text
+                    ax.annotate(' ', xy=(x, y), xytext=(x*2.1, y*2.1), arrowprops=dict(arrowstyle="-", lw=1, color='black')
+                    )
+                    
+        # wedge-pie chart slices, texts-objects representing labels auto texts-obects representing percentages
+
+        for r in range(num_rows, len(axes)):  #will hide extra plots
+            axes[r].set_visible(False)
+        
+        fig.legend(wedges[:len(labels)], labels, loc="upper left",bbox_to_anchor=(1,1), fontsize=30)
+
+    
+        plt.tight_layout(h_pad=5) # change distance between pie plots
+        
+        st.pyplot(fig)
+
