@@ -523,7 +523,7 @@ else:
             ax = axes[r]
             wedges, texts, autotexts = ax.pie(row[1:], autopct = '%1.1f%%', colors=colours, startangle=360)
             # texts = labels of each wedge, wedges = objects representing pie slices, autotexts = text annotations inside the wedges
-            ax.set_title(row[0], fontsize=30)
+            ax.set_title(row[0], fontsize=30, fontname=font_prop)
             wedges.extend(wedges) # appends individual wedges into wedges list and is used for making the global legend
             
             
@@ -533,6 +533,7 @@ else:
                         
                 # Set label size and position
                 autotext.set_fontsize(size_label)
+                autotext.set_fontname(font_prop)
         
                 # Adjust position: inside if large enough, outside if too small
                 if value > 5.5: 
