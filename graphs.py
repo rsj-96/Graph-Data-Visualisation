@@ -496,7 +496,7 @@ else:
     
         #inputs for labels
         
-        size_label = st.number_input('Enter Pie label font size', min_value=1, max_value=50, value=30)
+        size_label = st.number_input('Enter Pie label font size', min_value=1, max_value=50, value=20)
         
         #segment = st.checkbox("Label Segments with")
         
@@ -508,7 +508,7 @@ else:
 
         # Best to use subplots for pie charts
 
-        fig, axes = plt.subplots(num_subplot_rows, num_cols, figsize=(25,7*num_subplot_rows)) # 1 row and df columns
+        fig, axes = plt.subplots(num_subplot_rows, num_cols, figsize=(20,5*num_subplot_rows)) # 1 row and df columns
         #fig, axes = returns two objects. fig-overall figure, ax- an array of individual objects (one for each pie chart)
         
         axes = axes.flatten() # makes it so you don't get that numpy error when you want additional rows
