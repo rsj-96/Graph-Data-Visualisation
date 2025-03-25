@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import seaborn as sns
 import os
-import math
+#import math
 
 #st.write(print(os.getcwd())) # finds files path of repository
 
@@ -503,7 +503,7 @@ else:
         # Defining plot pies
         num_rows = len(df)
         num_cols = min(num_rows, 4) #max of 4 columns per row # could probablt make a selection thing for this!
-        num_subplot_rows = math.ceil(num_rows/4) # calculates
+        num_subplot_rows = np.ceil(len(df) / 4).astype(int)) # calculates
         
 
         # Best to use subplots for pie charts
