@@ -495,11 +495,17 @@ else:
         df = df.loc[:, selected_columns] 
     
         #inputs for labels
-        
+        col1, col2 = st.columns([3,1])
+        with col1:
+            title_size = st.number_input('Enter Pie title font size', min_value=1, max_value=50, value=22)
+        with col2:
+            st.write(' ')
+            st.write(' ')
+            tick = st.checkbox('Include title labels?')
+            
         size_label = st.number_input('Enter Pie label font size', min_value=1, max_value=50, value=20)
         
-        #segment = st.checkbox("Label Segments with")
-        
+              
         # Defining plot pies
         num_rows = len(df)
         num_cols = min(num_rows, 4) #max of 4 columns per row # could probablt make a selection thing for this!
@@ -519,12 +525,16 @@ else:
 
         #colours = ['#118ab2','#06d6a0','#ffd166','#ff8fa3','#dabfff','#f48c06']
 
+        
         for r, (index, row) in enumerate(df.iterrows()): # r - index of the row but this whole line loops over each row of df index is row index
             ax = axes[r]
             wedges, texts, autotexts = ax.pie(row[1:], autopct = '%1.1f%%', colors=colours, startangle=360)
             # texts = labels of each wedge, wedges = objects representing pie slices, autotexts = text annotations inside the wedges
             #ax.set_title(row[0],fontsize=32, fontproperties=None)
-            ax.text(0.5, 1, row[0], fontsize=22, ha='center', va='bottom', transform=ax.transAxes)
+            if tick:
+                ax.text(0.5, 1, row[0], fontsize=title_size, ha='center', va='bottom', transform=ax.transAxes)
+            else:
+                pass
             wedges.extend(wedges) # appends individual wedges into wedges list and is used for making the global legend
             
 
