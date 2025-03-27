@@ -103,9 +103,14 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-        imp_colour = st.color_picker('Pick a colour for Impurities', '#ff8fa3')
-        colours.append(imp_colour)
-            
+        col1, col2 = st.columns([2,1])
+        with col1: 
+            impurities = st.text_input('Rename impurities?', 'Impurities')
+        with col2:
+            imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
+            colours.append(imp_colour)
+        
+                    
         for var in variables:
             if var in df.columns:
                 pass
@@ -124,7 +129,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
         st.write(' ')
         st.write(' ')
         
-        legend = variables + ['Impurities']
+        legend = variables + [impurities]
         
         #colours_specific = ['#118ab2', '#06d6a0', '#ffd166', '#f48c06', '#ef476f', '#ff8fa3', '#dabfff']
         
@@ -134,12 +139,12 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
  
             imp_cols = [col for col in df.columns if col.startswith('imp') or col.startswith('Imp') or col.startswith('imp ') or col.startswith('Imp ') or col.startswith('Unk') or col.startswith('unk')] # select columns starting with a certain word
 
-            df['Impurities'] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
+            df[impurities] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
 
             df.drop(columns=imp_cols, inplace=True) # gets rid of the old columns that were used in the combined column
 
-            selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + ['Impurities']
-            df = df.loc[:, selected_columns] # how can I automate this selection?
+            selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + [impurities]
+            df = df.loc[:, selected_columns]
             
             st.write('Preview of Data for Screen Chart')
             st.write(df.head())
@@ -472,26 +477,31 @@ else:
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-        imp_colour = st.color_picker('Pick a colour for Impurities', '#ff8fa3')
-        colours.append(imp_colour)
+         col1, col2 = st.columns([2,1])
+        with col1: 
+            impurities = st.text_input('Rename impurities?', 'Impurities')
+        with col2:
+            imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
+            colours.append(imp_colour)
         
         for var in variables:
             if var in df.columns:
                 pass
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
-        
+                
+               
         # datafram rearrangement (collecting all the imps together):
         
         df.replace('-', 0, inplace=True)
  
         imp_cols = [col for col in df.columns if col.startswith('imp') or col.startswith('Imp') or col.startswith('imp ') or col.startswith('Imp ') or col.startswith('Unk') or col.startswith('unk')] # select columns starting with a certain word
 
-        df['Impurities'] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
+        df[impurities] = df[imp_cols].sum(axis=1) # will create a new column called impurities where the column name starts with imp/unk etc. and will sum this row wise (axis=1) is required
 
         df.drop(columns=imp_cols, inplace=True) # gets rid of the old columns that were used in the combined column
 
-        selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + ['Impurities']
+        selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + [impurities]
         df = df.loc[:, selected_columns] 
     
         #inputs for labels
