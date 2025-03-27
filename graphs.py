@@ -103,14 +103,13 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-        col1, col2 = st.columns([2,1])
-        with col1: 
+        col3, col4 = st.columns([2,1])
+        with col3: 
             impurities = st.text_input('Rename impurities?', 'Impurities')
-        with col2:
+        with col4:
             imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
             colours.append(imp_colour)
-        
-                    
+          
         for var in variables:
             if var in df.columns:
                 pass
@@ -176,7 +175,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
             # For labelling the impurities:
             
             bars_imps = []
-            for var in variables + ['Impurities']:
+            for var in variables + [impurities]:
                 bar_imp_heights = [row[var] if var in row else 0 for _, row in df.iterrows()]
                 bars_imps.append(bar_heights)
         
@@ -186,7 +185,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                     cumulative_height_imps = 0
                     for j in range(len(variables)):
                         cumulative_height_imps += row[variables[j]]  # Sum up all the previous bars before Impurities
-                        value = row['Impurities']
+                        value = row[impurities]
         
                 # Now we can position the Impurities text on top of the cumulative bar stack
                     plt.text(i, (value / 2) + cumulative_height_imps, f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
@@ -477,10 +476,10 @@ else:
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-         col1, col2 = st.columns([2,1])
-        with col1: 
+         col3, col4 = st.columns([2,1])
+        with col3: 
             impurities = st.text_input('Rename impurities?', 'Impurities')
-        with col2:
+        with col4:
             imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
             colours.append(imp_colour)
         
