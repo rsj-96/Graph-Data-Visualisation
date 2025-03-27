@@ -476,7 +476,7 @@ else:
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-         col3, col4 = st.columns([2,1])
+        col3, col4 = st.columns([2,1])
         with col3: 
             impurities = st.text_input('Rename impurities?', 'Impurities')
         with col4:
