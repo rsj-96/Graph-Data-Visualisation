@@ -123,7 +123,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
             labelling[var] = st.checkbox(f"Label {var} LCAP")
             
                 
-        labelling_imps = st.checkbox("Label Impurities LCAP")
+        labelling_imps = st.checkbox(f"Label {impurities} LCAP")
             
         st.write(' ')
         st.write(' ')
