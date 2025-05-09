@@ -15,7 +15,7 @@ import os
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined'])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'Time Course Plot'])
 
 # Description
 st.markdown('''
@@ -411,6 +411,128 @@ elif graph == 'Solubility Study':
             st.pyplot(fig) # plots the bar chart
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
+
+
+elif graph == 'Time Course Plot':
+    data = {
+            "Time (s)": [0,1,2,3,4,5,6],
+            "Condition": [0.0078817,0.0078166,0.0077188,0.0076861,0.0077188,0.0077514,0.0077189],
+        }  # Random data that can be replaced
+    
+    excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
+
+    excel_file = io.BytesIO() # in-memory binary stream to store the excel file - will be written into a stream rather than a file to be saved on a disk
+
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer: # pd.ExcelWriter is a pandas function for converting data into an excel file
+        excel_template.to_excel(writer, index=False, sheet_name='Sheet1') # converts the stream file to an excel file
+
+    
+    excel_file.seek(0) #  resets pointer back to the beginning
+    
+    # Downloader for template file
+
+    st.download_button(
+                label="Download Time Plot Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
+    with st.expander("Quick instruction📝"): 
+        st.markdown('''
+                1.	Upload an excel file to the drag and drop area. Please note that the excel file requires a column named ‘Time (s)’ to work.
+                2.  Preview of the data in the file will be displayed.
+                3.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
+                4.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
+                5.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
+                6.  Line plot of your data will be generated.
+                7.  Any questions or feedback please speak to RJ
+                
+                ''')
+    
+    file = st.file_uploader("Choose an '.xlsx' (excel) File for time course plot", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    
+    
+    if file:
+        df = pd.read_excel(file)  # reads the file into the dataframe using pandas
+        
+        st.write('Preview of Excel file')
+        st.write(df.head()) # displays dataframe in the streamlit application
+
+        #Dynamic Variables
+        
+        default_colours = ['#f48c06','#118ab2','#06d6a0','#ffd166','#dabfff','#ff8fa3']
+        
+        variables = []
+        num_variables = st.number_input("Number of Variables", min_value=1, max_value=20, value=1, step=1)
+        colours = []
+        
+        for x in range(num_variables):
+            col1, col2 = st.columns([2,1]) # inside[] is the column widths
+            with col1:
+                var_name = st.text_input(f'Enter Variable {x+1} name', f'Variable {x+1}')
+                variables.append(var_name)
+            
+            with col2:
+                default = default_colours[x%len(default_colours)]
+                colour = st.color_picker(f'Pick a colour', default)
+                colours.append(colour)
+        
+            
+        for var in variables:
+            if var in df.columns:
+                pass
+            else:
+                st.write(f"Warning: Column '{var}' does not exist in File")
+                
+        
+        st.write('Customise Plot')
+        
+        plot_title = st.text_input('Enter Plot Title', 'Plot Title')
+        x_axis = st.text_input('Enter x-axis label', 'Time / s')
+        y_axis = st.text_input('Enter y-axis label', 'Variable')
+        
+        limits = st.checkbox('Define y-axis limits?')
+        
+        if limits:
+            col1, col2 = st.columns([1,1])
+            with col1: 
+                limit_one = st.number_input('Insert lower limit', value=None, placeholder="Type a number...")
+            with col2:
+                limit_two = st.number_input('Insert upper limit', value=None, placeholder="Type a number...")
+                
+            y_limits = (limit_one, limit_two)
+        
+        else:
+            y_limits = None
+
+        if not df.empty:
+           
+            variables_updated = [var for var in variables if var in df.columns]
+            legend_updated = [var for var in variables_updated]
+        
+            selected_columns = ['Time (s)'] + variables_updated
+            df = df[selected_columns] 
+            
+            st.write('Preview of Data for Time Course Plot') # Change as needed
+            st.write(df.head())
+
+            df.plot.line(x='Time (s)', y= variables_updated, color = colours)
+            plt.xlabel(x_axis, fontproperties=font_prop)
+            plt.ylabel(y_axis, fontproperties=font_prop)
+            plt.xticks(fontproperties=font_prop)
+            plt.yticks(fontproperties=font_prop)            
+            plt.legend(loc='upper left', bbox_to_anchor=(1,1), prop=font_prop, labels=legend_updated)
+            plt.title(plot_title, fontproperties=font_prop) 
+            
+            if y_limits:
+                plt.ylim(y_limits)
+            
+            st.pyplot(plt.gcf()) # plots the bar chart
+            
+        else: # if the dataframe is empty the else phrase will occur
+            st.write('Please upload an excel file to proceed')
+
 
 else:
     data = {
