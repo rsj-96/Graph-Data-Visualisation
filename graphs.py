@@ -440,7 +440,7 @@ elif graph == 'Time Course Plot':
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
-                1.  This option is primarily for plotting a time course plot as a line graph, however, the x-axis column can be modified to plot any x-axis value provided that the 'Enter x-axis Column Name' is updated. Please not that this naming must match the naming in the excel file to be plotted.
+                1.  This option is primarily for plotting a time course plot as a line graph, however, the x-axis column can be modified to plot any x-axis value provided that the 'Enter x-axis Column Name' is updated. Please note that this naming must match the naming in the excel file to be plotted.
                 2.  Upload an excel file to the drag and drop area. Please note that the excel file requires a column named ‘Time (s)’ to work if plotting time course data.
                 3.  Preview of the data in the file will be displayed.
                 4.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
