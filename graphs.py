@@ -714,7 +714,7 @@ st.markdown("""
             background-color:#F0F2F6;
             color: black;
             padding: 10px 20px;
-            font-size: 16px;
+            font-size: 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
