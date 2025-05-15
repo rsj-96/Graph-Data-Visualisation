@@ -712,7 +712,7 @@ st.markdown("""
     <a href="https://lc-data.streamlit.app/" target="_blank">
         <button style="
             background-color:#F0F2F6;
-            color: black;
+            color: #444352;
             padding: 10px 20px;
             font-size: 15px;
             border: none;
