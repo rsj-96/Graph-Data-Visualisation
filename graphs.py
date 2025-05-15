@@ -434,19 +434,20 @@ elif graph == 'Time Course Plot':
     st.download_button(
                 label="Download Time Plot Template.xlsx ", # needs to change if you copy it somewhere
                 data=excel_file,
-                file_name="Screening_Template.xlsx",
+                file_name="Time_Course_Plot_Template.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )  # Makes it so you can download the excel file with the streamlit widget
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
-                1.	Upload an excel file to the drag and drop area. Please note that the excel file requires a column named ‘Time (s)’ to work.
-                2.  Preview of the data in the file will be displayed.
-                3.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
-                4.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
-                5.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
-                6.  Line plot of your data will be generated.
-                7.  Any questions or feedback please speak to RJ
+                1.  This option is primarily for plotting a time course plot as a line graph, however, the x-axis column can be modified to plot any x-axis value provided that the 'Enter x-axis Column Name' is updated. Please not that this naming must match the naming in the excel file to be plotted.
+                2.  Upload an excel file to the drag and drop area. Please note that the excel file requires a column named ‘Time (s)’ to work if plotting time course data.
+                3.  Preview of the data in the file will be displayed.
+                4.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
+                5.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
+                6.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
+                7.  Line plot of your data will be generated.
+                8.  Any questions or feedback please speak to RJ
                 
                 ''')
     
@@ -462,6 +463,8 @@ elif graph == 'Time Course Plot':
         #Dynamic Variables
         
         default_colours = ['#f48c06','#118ab2','#06d6a0','#ffd166','#dabfff','#ff8fa3']
+
+        x_val = st.text_input('Enter x-axis Column Name', 'Time (s)')
         
         variables = []
         num_variables = st.number_input("Number of Variables", min_value=1, max_value=20, value=1, step=1)
@@ -511,13 +514,13 @@ elif graph == 'Time Course Plot':
             variables_updated = [var for var in variables if var in df.columns]
             legend_updated = [var for var in variables_updated]
         
-            selected_columns = ['Time (s)'] + variables_updated
+            selected_columns = [x_val] + variables_updated
             df = df[selected_columns] 
             
             st.write('Preview of Data for Time Course Plot') # Change as needed
             st.write(df.head())
 
-            df.plot.line(x='Time (s)', y= variables_updated, color = colours)
+            df.plot.line(x= x_val, y= variables_updated, color = colours)
             plt.xlabel(x_axis, fontproperties=font_prop)
             plt.ylabel(y_axis, fontproperties=font_prop)
             plt.xticks(fontproperties=font_prop)
