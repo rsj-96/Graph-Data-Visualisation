@@ -711,7 +711,7 @@ st.write('Want to generate LC data table? Click below')
 st.markdown("""
     <a href="https://lc-data.streamlit.app/" target="_blank">
         <button style="
-            background-color:#efedeb;
+            background-color:#F0F2F6;
             color: black;
             padding: 10px 20px;
             font-size: 16px;
