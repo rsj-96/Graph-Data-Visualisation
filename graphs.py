@@ -706,3 +706,21 @@ else:
         
         st.pyplot(fig)
 
+st.write('Want to generate LC data table? Click below')
+
+st.markdown("""
+    <a href="https://lc-data.streamlit.app/" target="_blank">
+        <button style="
+            background-color:#efedeb;
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        ">
+            Open LC Data App
+        </button>
+    </a>
+""", unsafe_allow_html=True)
+
