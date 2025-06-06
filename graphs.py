@@ -14,6 +14,7 @@ import os
 
 # Name of Script
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
+st.subheader('Select Graph Type') # subheader
 
 graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'Time Course Plot'])
 
@@ -34,7 +35,7 @@ plt.rcParams['font.family'] = font_prop.get_name()
 if graph =='Reaction Screen Bar Chart - Impurities Combined':
     
     #Screen Sheet Download
-
+    
     data = {
             "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
             "SM": [10, 50, 80],
@@ -55,13 +56,8 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
     
     # Downloader for template file
 
-    st.download_button(
-                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
-                data=excel_file,
-                file_name="Screening_Template.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )  # Makes it so you can download the excel file with the streamlit widget
-    
+    st.subheader("Instructions")
+       
     with st.expander("Quick instruction📝"): 
         st.markdown('''
                 1.	Download Screen Template and fill with UPLC data. The filled Excel sheet must have a column named ‘Conditions’ to work but the conditions column can be filled with any writing.
@@ -73,18 +69,33 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                 7.  Any questions or feedback please speak to RJ
                 ''')
     
+    st.subheader('Upload Screening Data')
+    
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    
+    st.download_button(
+                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
+    
     if file:
         df = pd.read_excel(file)  # reads the file into the dataframe using pandas
         
         st.write('Preview of Excel file')
         st.write(df.head()) # displays dataframe in the streamlit application
 
-    
+        st.subheader('Customise Plot Labelling')
+        
         x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
            
         title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
         size = st.number_input('Enter label font size',min_value=1, max_value=20, value=9)
+        
+        
+        st.subheader("Customise Plot Variables")
         
         #Dynamic Variables
         
@@ -103,19 +114,23 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                 colour = st.color_picker(f'Pick a colour for {x+1}', default)
                 colours.append(colour)
         
-        col3, col4 = st.columns([2,1])
-        with col3: 
+            
+        col1, col2 = st.columns([2,1])
+        with col1: 
             impurities = st.text_input('Rename impurities?', 'Impurities')
-        with col4:
+        with col2:
             imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
             colours.append(imp_colour)
-          
+        
+                    
         for var in variables:
             if var in df.columns:
                 pass
             else:
                 st.write(f"Warning: Column '{var}' does not exist in File")
         # Tick boxes for labelling:
+        
+        st.subheader("Label Variable on Graph?")
         
         labelling = {}
         
@@ -126,7 +141,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
         labelling_imps = st.checkbox(f"Label {impurities} LCAP")
             
         st.write(' ')
-        st.write(' ')
+        
         
         legend = variables + [impurities]
         
@@ -143,7 +158,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
             df.drop(columns=imp_cols, inplace=True) # gets rid of the old columns that were used in the combined column
 
             selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + [impurities]
-            df = df.loc[:, selected_columns]
+            df = df.loc[:, selected_columns] # how can I automate this selection?
             
             st.write('Preview of Data for Screen Chart')
             st.write(df.head())
@@ -175,7 +190,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
             # For labelling the impurities:
             
             bars_imps = []
-            for var in variables + [impurities]:
+            for var in variables + ['Impurities']:
                 bar_imp_heights = [row[var] if var in row else 0 for _, row in df.iterrows()]
                 bars_imps.append(bar_heights)
         
@@ -185,7 +200,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
                     cumulative_height_imps = 0
                     for j in range(len(variables)):
                         cumulative_height_imps += row[variables[j]]  # Sum up all the previous bars before Impurities
-                        value = row[impurities]
+                        value = row['Impurities']
         
                 # Now we can position the Impurities text on top of the cumulative bar stack
                     plt.text(i, (value / 2) + cumulative_height_imps, f'{value:.2f}', ha='center', fontproperties=font_prop, fontsize=size)
@@ -194,6 +209,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
             
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
+
 
 # SPECIFIC REACTION SCREEN - ALL COLUMNS MUST BE SPECIFIED
 
@@ -221,12 +237,7 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
     
     # Downloader for template file
 
-    st.download_button(
-                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
-                data=excel_file,
-                file_name="Screening_Template.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )  # Makes it so you can download the excel file with the streamlit widget
+    st.subheader("Instructions")
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
@@ -239,14 +250,25 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
                 7.  Any questions or feedback please speak to RJ
                 ''')
     
+    
+    st.subheader("Upload Screening Data")
+    
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    st.download_button(
+                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
     if file:
         df = pd.read_excel(file)  # reads the file into the dataframe using pandas
         
         st.write('Preview of Excel file')
         st.write(df.head()) # displays dataframe in the streamlit application
 
-    
+        st.subheader("Customise Plot Labelling")
+        
         x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
            
         title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
@@ -254,6 +276,8 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
         size = st.number_input('Enter label font size', min_value=1, max_value=20, value=9)
         
         #Dynamic Variables
+        
+        st.subheader("Customise Plot Variables")
         
         variables = []
         num_variables = st.number_input("Number of Products/Reagents", min_value=2, max_value=20, value=2, step=1)
@@ -277,6 +301,8 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
                 st.write(f"Warning: Column '{var}' does not exist in File")
                 
         # Tick boxes:
+        
+        st.subheader("Label Variable on Graph?")
         
         labelling = {}
         
@@ -334,8 +360,6 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
         
 # SOLUBILITY GRAPHS        
  
-elif graph == 'Solubility Study':
-    
     # Solubility sheet download
 
     data = {
@@ -354,16 +378,10 @@ elif graph == 'Solubility Study':
     
     excel_file.seek(0) #  resets pointer back to the beginning
     
-    # Downloader for template file
 
-    st.download_button(
-                label="Download Solubility Sheet Template.xlsx ",
-                data=excel_file,
-                file_name="Solubility_Template.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )  # Makes it so you can download the excel file with the streamlit widget
-    
-    
+
+     
+    st.subheader("Instructions")
     with st.expander("Quick instruction📝"): 
         st.markdown('''
                 1. Download solubility sheet template
@@ -374,7 +392,16 @@ elif graph == 'Solubility Study':
                 6. Any questions please speak with RJ
                 ''')
     
+    
+    st.subheader("Upload Solubility Data")
+    
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Solubility Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    st.download_button(
+                label="Download Solubility Sheet Template.xlsx ",
+                data=excel_file,
+                file_name="Solubility_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
     
     if file:
         df = pd.read_excel(file)  # reads the file into the dataframe using pandas
@@ -384,7 +411,10 @@ elif graph == 'Solubility Study':
         for x, row in df.iterrows():  # will iterate of each row and if the value is less than 0 will change value to 0
             if row['Solubility (mg/ml)'] < 0: # if the row of colum solubility is less than 0
                 df.at[x, 'Solubility (mg/ml)'] = 0 # value at that point will = 0
-            
+         
+        
+        st.subheader("Cutomise Plot Labelling")
+           
         label_1 = st.text_input('Enter Label 1', '25 °C') # collects user inputs for labels using streamlit widget
         label_2 =  st.text_input('Enter Label 2', '50 °C')
         title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C') # collects user inputs for title using streamlit widget
@@ -411,7 +441,6 @@ elif graph == 'Solubility Study':
             st.pyplot(fig) # plots the bar chart
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
-
 
 elif graph == 'Time Course Plot':
     data = {
