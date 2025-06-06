@@ -441,7 +441,7 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
             st.pyplot(fig) # plots the bar chart
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
-
+            
 elif graph == 'Time Course Plot':
     data = {
             "Time (s)": [0,1,2,3,4,5,6],
@@ -458,43 +458,50 @@ elif graph == 'Time Course Plot':
     
     excel_file.seek(0) #  resets pointer back to the beginning
     
+    st.subheader("Instructions")
+    
+    with st.expander("Quick instruction📝"): 
+        st.markdown('''
+                1.	Upload and excel file to the drag and drop area. Excel file requires a column named ‘Time (s)’ to work.
+                2.  Preview of the data in the file will be displayed.
+                3.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
+                4.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
+                5.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
+                6.  Line plot of your data will be generated.
+                7.  Any questions or feedback please speak to RJ
+                
+                ''')
+    
+    
+    st.subheader("Upload Plot Data")
+    
+    file = st.file_uploader("Choose an '.xlsx' (excel) File for time course plot", type = ['xlsx']) # streamlit file uploader where the excel type is specified
     # Downloader for template file
 
     st.download_button(
                 label="Download Time Plot Template.xlsx ", # needs to change if you copy it somewhere
                 data=excel_file,
-                file_name="Time_Course_Plot_Template.xlsx",
+                file_name="Time Course Plot.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )  # Makes it so you can download the excel file with the streamlit widget
-    
-    with st.expander("Quick instruction📝"): 
-        st.markdown('''
-                1.  This option is primarily for plotting a time course plot as a line graph, however, the x-axis column can be modified to plot any x-axis value provided that the 'Enter x-axis Column Name' is updated. Please note that this naming must match the naming in the excel file to be plotted.
-                2.  Upload an excel file to the drag and drop area. Please note that the excel file requires a column named ‘Time (s)’ to work if plotting time course data.
-                3.  Preview of the data in the file will be displayed.
-                4.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
-                5.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
-                6.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
-                7.  Line plot of your data will be generated.
-                8.  Any questions or feedback please speak to RJ
-                
-                ''')
-    
-    file = st.file_uploader("Choose an '.xlsx' (excel) File for time course plot", type = ['xlsx']) # streamlit file uploader where the excel type is specified
-    
     
     if file:
         df = pd.read_excel(file)  # reads the file into the dataframe using pandas
         
         st.write('Preview of Excel file')
-        st.write(df.head()) # displays dataframe in the streamlit application
+        
+        edited_df = st.data_editor(df)
+        #st.write(df.head()) # displays dataframe in the streamlit application
 
         #Dynamic Variables
         
         default_colours = ['#f48c06','#118ab2','#06d6a0','#ffd166','#dabfff','#ff8fa3']
-
-        x_val = st.text_input('Enter x-axis Column Name', 'Time (s)')
         
+        
+        st.subheader("Customise Plot Variables")
+        
+        x_val = st.text_input('Enter x-axis Column Name', 'Time (s)')
+               
         variables = []
         num_variables = st.number_input("Number of Variables", min_value=1, max_value=20, value=1, step=1)
         colours = []
@@ -518,7 +525,7 @@ elif graph == 'Time Course Plot':
                 st.write(f"Warning: Column '{var}' does not exist in File")
                 
         
-        st.write('Customise Plot')
+        st.subheader('Customise Plot Labelling and Limits')
         
         plot_title = st.text_input('Enter Plot Title', 'Plot Title')
         x_axis = st.text_input('Enter x-axis label', 'Time / s')
@@ -549,7 +556,7 @@ elif graph == 'Time Course Plot':
             st.write('Preview of Data for Time Course Plot') # Change as needed
             st.write(df.head())
 
-            df.plot.line(x= x_val, y= variables_updated, color = colours)
+            df.plot.line(x=x_val, y= variables_updated, color = colours)
             plt.xlabel(x_axis, fontproperties=font_prop)
             plt.ylabel(y_axis, fontproperties=font_prop)
             plt.xticks(fontproperties=font_prop)
@@ -585,14 +592,7 @@ else:
     
     excel_file.seek(0) #  resets pointer back to the beginning
     
-    # Downloader for template file
-
-    st.download_button(
-                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
-                data=excel_file,
-                file_name="Screening_Template.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )  # Makes it so you can download the excel file with the streamlit widget
+    st.subheader("Instructions")
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
@@ -604,7 +604,18 @@ else:
                 6.  Any questions or feedback please speak to RJ
                 ''')
     
+    st.subheader("Upload Screening Data")
+    
     file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    # Downloader for template file
+    
+    st.download_button(
+                label="Download Screen Sheet Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="Screening_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
     if file:
         df = pd.read_excel(file)  # reads the file into the dataframe using pandas
         
@@ -612,6 +623,8 @@ else:
         st.write(df.head()) # displays dataframe in the streamlit application
 
         #Dynamic Variables
+        
+        st.subheader("Customise Plot Variables")
         
         default_colours = ['#118ab2','#06d6a0','#ffd166','#dabfff','#f48c06', '#ff8fa3']
         
@@ -627,13 +640,13 @@ else:
             
             with col2:
                 default = default_colours[x%len(default_colours)]
-                colour = st.color_picker(f'Pick a colour for {x+1}', default)
+                colour = st.color_picker(f'Pick a colour', default)
                 colours.append(colour)
         
-        col3, col4 = st.columns([2,1])
-        with col3: 
+        col1, col2 = st.columns([2,1])
+        with col1: 
             impurities = st.text_input('Rename impurities?', 'Impurities')
-        with col4:
+        with col2:
             imp_colour = st.color_picker('Pick a colour', '#ff8fa3')
             colours.append(imp_colour)
         
@@ -657,7 +670,11 @@ else:
         selected_columns = ['Conditions'] + [var for var in variables if var in df.columns] + [impurities]
         df = df.loc[:, selected_columns] 
     
+        
+        st.subheader("Customise Labelling Properties")
+        
         #inputs for labels
+        
         col1, col2 = st.columns([3,1])
         with col1:
             title_size = st.number_input('Enter Pie title font size', min_value=1, max_value=50, value=22)
@@ -665,10 +682,12 @@ else:
             st.write(' ')
             st.write(' ')
             tick = st.checkbox('Include title labels?')
-            
+        
         size_label = st.number_input('Enter Pie label font size', min_value=1, max_value=50, value=20)
         
-              
+        
+        #segment = st.checkbox("Label Segments with")
+        
         # Defining plot pies
         num_rows = len(df)
         num_cols = min(num_rows, 4) #max of 4 columns per row # could probablt make a selection thing for this!
