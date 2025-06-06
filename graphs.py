@@ -359,7 +359,8 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
                         
         
 # SOLUBILITY GRAPHS        
- 
+elif   graph =='Solubility Study':
+    
     # Solubility sheet download
 
     data = {
@@ -378,9 +379,6 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
     
     excel_file.seek(0) #  resets pointer back to the beginning
     
-
-
-     
     st.subheader("Instructions")
     with st.expander("Quick instruction📝"): 
         st.markdown('''
