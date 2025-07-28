@@ -418,6 +418,19 @@ elif   graph =='Solubility Study':
         title = st.text_input('Enter chart title', 'Solubility Study at 25°C and 50°C') # collects user inputs for title using streamlit widget
         x_axis = st.text_input('Enter x-axis title', 'Solvent')
 
+        sol = st.checkbox(f"Add solubility threshold line?")
+        if sol:
+            y= st.number_input('Enter solubility threshold', min_value=1, value=20)
+        else:
+            pass
+        
+        labelling = st.checkbox(f"label solubility values on graph?")
+        if labelling:
+            font= st.number_input('Enter fontsize', min_value=1, value=9)
+            rot= st.number_input('Enter rotation', min_value=0, value=0)
+        else:
+            pass
+
         colours = ['#39beea', '#ffa42e'] # specifies the colours, popped in a list so that it stays in order and doesn't assign it randomly
 
         if not df.empty: # command checks if the dataframe is empty or not, if it's not it will progress with plotting the barchart
@@ -430,7 +443,21 @@ elif   graph =='Solubility Study':
             plt.xticks(rotation=90, fontproperties=font_prop)
             plt.yticks(fontproperties=font_prop)
             plt.title(title, fontproperties=font_prop)
-            plt.axhline(y=20, color='#84848b', linestyle='--', linewidth=0.7)
+            if sol:
+                plt.axhline(y=y, color='#84848b', linestyle='--', linewidth=0.7)
+            else:
+                pass
+            
+            if labelling:
+                for container in ax.containers:
+                    ax.bar_label(
+                        container, 
+                        fmt='%.1f', 
+                        label_type='edge', 
+                        fontsize=font, 
+                        padding=1,
+                        rotation = rot
+                    )
 
             handles, labels = ax.get_legend_handles_labels() # gets the existing legend but need to define the ax first (see above) and also place this after the graph has been plotted!
             new_labels = [label_1, label_2] # defining labels from the user inputs
