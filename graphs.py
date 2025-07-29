@@ -107,7 +107,7 @@ if graph =='Reaction Screen Bar Chart - Impurities Combined':
         for x in range(num_variables):
             col1, col2 = st.columns([2,1])
             with col1:
-                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
                 variables.append(var_name)
             with col2:
                 default = default_colours[x % len(default_colours)]
@@ -287,7 +287,7 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
         for x in range(num_variables):
             col1, col2 = st.columns([2,1])
             with col1:
-                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
                 variables.append(var_name)
             with col2:
                 default = default_colours[x%len(default_colours)]
@@ -534,7 +534,7 @@ elif graph == 'Time Course Plot':
         for x in range(num_variables):
             col1, col2 = st.columns([2,1]) # inside[] is the column widths
             with col1:
-                var_name = st.text_input(f'Enter Variable {x+1} name', f'Variable {x+1}')
+                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
                 variables.append(var_name)
             
             with col2:
@@ -660,7 +660,7 @@ else:
         for x in range(num_variables):
             col1, col2 = st.columns([2,1]) # inside[] is the column widths
             with col1:
-                var_name = st.text_input(f'Enter Product/Reagent {x+1} name', f'Product/Reagent {x+1}')
+                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
                 variables.append(var_name)
             
             with col2:
