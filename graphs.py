@@ -564,7 +564,7 @@ elif graph == 'Line Plot':
         with col1:
             x_axis = st.text_input('Enter x-axis label', x_val)
         with col2:
-            x_size = st.number_input("x-axis Font Size", min_value=1.0, max_value=100.0, value=15.0)
+            x_size = st.number_input("x-axis Font Size", min_value=1.0, max_value=100.0, value=12.0)
         
         with col1:
             rot = st.number_input("x-tick rotation", min_value=-360.0, max_value=360.0, value=0.0)
@@ -574,7 +574,7 @@ elif graph == 'Line Plot':
         with col1:       
             y_axis = st.text_input('Enter y-axis label', 'Variable')
         with col2:
-            y_size = st.number_input("y-axis Font Size", min_value=1.0, max_value=100.0, value=15.0)
+            y_size = st.number_input("y-axis Font Size", min_value=1.0, max_value=100.0, value=12.0)
         
         leg_size = st.number_input("Legend Font Size", min_value=1.0, max_value=100.0, value=10.0)
         
@@ -828,5 +828,6 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
