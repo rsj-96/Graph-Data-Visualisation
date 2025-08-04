@@ -16,7 +16,7 @@ import os
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 st.subheader('Select Graph Type') # subheader
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'Time Course Plot'])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'Line Plot'])
 
 # Description
 st.markdown('''
@@ -467,7 +467,7 @@ elif   graph =='Solubility Study':
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
             
-elif graph == 'Time Course Plot':
+elif graph == 'Line Plot':
     data = {
             "Time (s)": [0,1,2,3,4,5,6],
             "Condition": [0.0078817,0.0078166,0.0077188,0.0076861,0.0077188,0.0077514,0.0077189],
@@ -487,9 +487,9 @@ elif graph == 'Time Course Plot':
     
     with st.expander("Quick instruction📝"): 
         st.markdown('''
-                1.	Upload and excel file to the drag and drop area. Excel file requires a column named ‘Time (s)’ to work.
+                1.	Upload and excel file to the drag and drop area.
                 2.  Preview of the data in the file will be displayed.
-                3.  Select the number of variables (columns) you want to plot. The naming of these variables needs to match the excel file in order to be plotted.
+                3.  Select the number of variables (columns) you want to plot and select columns using the dropdown box.
                 4.  Fill out the 'Customise Plot' Section with, Plot tile and x and y axis labels. If you do not want these labelling fill with an empty space.
                 5.  If needed chack the 'Define y-axis limits?' box and fill with the appropriate limits.
                 6.  Line plot of your data will be generated.
@@ -504,9 +504,9 @@ elif graph == 'Time Course Plot':
     # Downloader for template file
 
     st.download_button(
-                label="Download Time Plot Template.xlsx ", # needs to change if you copy it somewhere
+                label="Download Line Plot Template.xlsx ", # needs to change if you copy it somewhere
                 data=excel_file,
-                file_name="Time Course Plot.xlsx",
+                file_name="Line Plot.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )  # Makes it so you can download the excel file with the streamlit widget
     
@@ -525,23 +525,26 @@ elif graph == 'Time Course Plot':
         
         st.subheader("Customise Plot Variables")
         
-        x_val = st.text_input('Enter x-axis Column Name', 'Time (s)')
+        x_val = st.selectbox('Enter x-axis Column Name', df.columns)
                
         variables = []
         num_variables = st.number_input("Number of Variables", min_value=1, max_value=20, value=1, step=1)
         colours = []
-        
+        legend_updated = []
         for x in range(num_variables):
-            col1, col2 = st.columns([2,1]) # inside[] is the column widths
+            col1, col2, col3 = st.columns([3,1,2]) # inside[] is the column widths
             with col1:
-                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
+                var_name = st.selectbox(f'Enter Variable {x+1} name', df.columns)
                 variables.append(var_name)
             
             with col2:
                 default = default_colours[x%len(default_colours)]
                 colour = st.color_picker(f'Pick a colour', default)
                 colours.append(colour)
-        
+            
+            with col3:
+                leg = st.text_input(f"Change Name of variable {x+1}?", var_name) # update name for legend -- NEED TO UPDATE
+                legend_updated.append(leg)
             
         for var in variables:
             if var in df.columns:
@@ -552,9 +555,36 @@ elif graph == 'Time Course Plot':
         
         st.subheader('Customise Plot Labelling and Limits')
         
-        plot_title = st.text_input('Enter Plot Title', 'Plot Title')
-        x_axis = st.text_input('Enter x-axis label', 'Time / s')
-        y_axis = st.text_input('Enter y-axis label', 'Variable')
+        col1, col2 = st.columns([1,1])
+        with col1:
+            plot_title = st.text_input('Enter Plot Title', '')
+        with col2:
+            title_siz = st.number_input("Title Font Size", min_value=1.0, max_value=100.0, value=20.0)
+        
+        with col1:
+            x_axis = st.text_input('Enter x-axis label', x_val)
+        with col2:
+            x_size = st.number_input("x-axis Font Size", min_value=1.0, max_value=100.0, value=15.0)
+        
+        with col1:
+            rot = st.number_input("x-tick rotation", min_value=-360.0, max_value=360.0, value=0.0)
+        with col2:
+            tick_size = st.number_input("Tick Font Size", min_value=1.0, max_value=100.0, value=10.0)
+        
+        with col1:       
+            y_axis = st.text_input('Enter y-axis label', 'Variable')
+        with col2:
+            y_size = st.number_input("y-axis Font Size", min_value=1.0, max_value=100.0, value=15.0)
+        
+        leg_size = st.number_input("Legend Font Size", min_value=1.0, max_value=100.0, value=10.0)
+        
+        st.write("Modify Figure Size")
+        col1, col2 = st.columns([1,1])
+        with col1:
+            a = st.number_input("width", min_value=1.0, max_value=100.0, value=6.4)
+        with col2:
+            b = st.number_input("height", min_value=1.0, max_value=100.0, value=4.8)
+        
         
         limits = st.checkbox('Define y-axis limits?')
         
@@ -573,27 +603,29 @@ elif graph == 'Time Course Plot':
         if not df.empty:
            
             variables_updated = [var for var in variables if var in df.columns]
-            legend_updated = [var for var in variables_updated]
+            #legend_updated = [var for var in variables_updated]
         
             selected_columns = [x_val] + variables_updated
             df = df[selected_columns] 
             
             st.write('Preview of Data for Time Course Plot') # Change as needed
             st.write(df.head())
-
-            df.plot.line(x=x_val, y= variables_updated, color = colours)
-            plt.xlabel(x_axis, fontproperties=font_prop)
-            plt.ylabel(y_axis, fontproperties=font_prop)
-            plt.xticks(fontproperties=font_prop)
-            plt.yticks(fontproperties=font_prop)            
-            plt.legend(loc='upper left', bbox_to_anchor=(1,1), prop=font_prop, labels=legend_updated)
-            plt.title(plot_title, fontproperties=font_prop) 
+            
+            
+            df.plot.line(x=x_val, y= variables_updated, color = colours, figsize=(a,b))
+            plt.xlabel(x_axis, fontproperties=font_prop, fontsize=x_size)
+            plt.ylabel(y_axis, fontproperties=font_prop, fontsize=y_size)
+            plt.xticks(fontproperties=font_prop, rotation=rot, fontsize= tick_size)
+            plt.yticks(fontproperties=font_prop, fontsize= tick_size)            
+            plt.legend(loc='upper left', bbox_to_anchor=(1,1), labels=legend_updated, fontsize=leg_size)
+            plt.title(plot_title, fontproperties=font_prop, fontsize= title_siz) 
+            
             
             if y_limits:
                 plt.ylim(y_limits)
             
-            st.pyplot(plt.gcf()) # plots the bar chart
-            
+            st.pyplot(plt.gcf()) # plots the line plot
+    
         else: # if the dataframe is empty the else phrase will occur
             st.write('Please upload an excel file to proceed')
 
@@ -796,4 +828,5 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
