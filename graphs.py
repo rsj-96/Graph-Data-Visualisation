@@ -16,7 +16,7 @@ import os
 st.title('Graphs for Reaction Screens and Solubility Studies')  # Replace with your script name
 st.subheader('Select Graph Type') # subheader
 
-graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'Line Plot'])
+graph = st.radio('Pick one:', ['Solubility Study', 'Reaction Screen Bar Chart - Impurities Combined', 'Reaction Screen Bar Chart - Specific', 'Reaction Screen Pie Chart - Impurities Combined', 'HTS Pie Chart', 'Line Plot'])
 
 # Description
 st.markdown('''
@@ -630,7 +630,7 @@ elif graph == 'Line Plot':
             st.write('Please upload an excel file to proceed')
 
 
-else:
+elif graph == 'Reaction Screen Pie Chart - Impurities Combined':
     data = {
             "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
             "SM": [10, 50, 80],
@@ -810,6 +810,237 @@ else:
         plt.tight_layout(h_pad=5) # change distance between pie plots
         
         st.pyplot(fig)
+#--HTS PIES--
+else: # graph == 'HTS Pie Chart'
+
+    data = {
+            "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
+            "SM": [10, 50, 80],
+            'Product' : [70, 40, 10],
+            'Imp 1' : [5, 3, 10],
+            'Imp 2' : [15, 7, 0],
+        }  # Random data that can be replaced -- NEED TO CHANGE THE TEMPLATE FOR THIS --
+    
+    excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
+
+    excel_file = io.BytesIO() # in-memory binary stream to store the excel file - will be written into a stream rather than a file to be saved on a disk
+
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer: # pd.ExcelWriter is a pandas function for converting data into an excel file
+        excel_template.to_excel(writer, index=False, sheet_name='Sheet1') # converts the stream file to an excel file
+
+    
+    excel_file.seek(0) #  resets pointer back to the beginning
+    
+    # Downloader for template file
+
+    st.download_button(
+                label="Download HTS Pie Template.xlsx ", # needs to change if you copy it somewhere
+                data=excel_file,
+                file_name="HTS_Pie_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )  # Makes it so you can download the excel file with the streamlit widget
+    
+    with st.expander("How to Use📝"): 
+        st.markdown('''
+                1.	upload
+
+                ''')
+    
+    file = st.file_uploader("Choose an '.xlsx' (excel) File for Screen Data", type = ['xlsx']) # streamlit file uploader where the excel type is specified
+    if file:
+        df = pd.read_excel(file)  # reads the file into the dataframe using pandas
+        
+        st.write('Preview of Excel file')
+        st.write(df.head()) # displays dataframe in the streamlit application
+        
+        df.columns = df.columns.str.strip() # removes any leading or trailiong spaces
+        
+        #Select columns
+        
+        st.subheader("Select Data to Include")
+        st.write("Please note that this must match the naming of the columns in .xlsx file")
+        
+        default_colours = ['#118ab2','#06d6a0','#ffd166','#dabfff','#f48c06', '#ff8fa3']
+        
+        variables = []
+        num_variables = st.number_input("Number of Products/Reagents", min_value=1, max_value=20, value=2, step=1)
+        colours = []
+        
+        for x in range(num_variables):
+            col1, col2 = st.columns([2,1]) # inside[] is the column widths
+            with col1:
+                var_name = st.selectbox(f'Product/Reagent {x+1} name', df.columns)
+                variables.append(var_name)
+            
+            with col2:
+                default = default_colours[x%len(default_colours)]
+                colour = st.color_picker(f'Pick a colour', default)
+                colours.append(colour)
+        
+        for var in variables:
+            if var in df.columns:
+                pass
+            else:
+                st.write(f"Warning: Column '{var}' does not exist in File")
+                
+        st.subheader("Select Reaction Conditions")
+        st.write("Please note that this must match the naming of the columns in .xlsx file")
+        
+        x_conditions = st.selectbox("x-conditions", df.columns)
+        
+        y_conditions=st.selectbox("y-conditions", df.columns)
+        
+        st.subheader("Customise Plot")
+        
+        col1, col2 = st.columns([3,1])
+        with col1:
+            title = st.text_input("Input plot title")
+        with col2:
+            title_size = st.number_input('Font size', min_value=1, max_value=50, value=20)
+        
+        col1, col2 = st.columns([3,1])
+        with col1:
+            size_label = st.number_input('Input x_y labelling font size', min_value=1, max_value=100, value=15)
+        with col2:
+            dis= st.number_input('Input column padding', min_value=-3, max_value=50, value=20)
+        
+        col1, col2 = st.columns([3,1])
+        with col1:
+            legend_size = st.number_input('Input legend font size', min_value=1, max_value=100, value=15)
+        with col2:
+            pad = st.number_input('Input legend padding', min_value=-3.00, max_value=5.00, value=0.00)
+        
+        
+        all_columns = set(df.columns)
+        selected_columns = set(variables + [x_conditions, y_conditions])
+        unselected_columns = list(all_columns - selected_columns)
+
+        if unselected_columns:
+            col1, col2 = st.columns([3,1])
+            with col1:
+                others = st.text_input('Rename Others?', 'Others')
+            with col2:
+               oth_colour = st.color_picker('Pick a colour', '#ff8fa3')
+            
+            df[others] = df[unselected_columns].sum(axis=1)
+            variables.append(others)
+            colours.append(oth_colour)
+        else:
+            pass
+        
+        labels = st.checkbox('Include value labelling?')
+        if labels:
+            label_size = st.number_input('Input label font size', min_value=1, max_value=100, value=15)
+        else:
+            pass
+            
+        
+        # Select relevant columns
+        df = df[variables + [y_conditions, x_conditions]] # combine the columns
+
+        # Dynamically detect solvent and condition categories
+        solvent_order = sorted(df[y_conditions].dropna().unique())
+        condition_order = sorted(df[x_conditions].dropna().unique()) # drops any repeated values or empty values and then orders them alphabetically
+
+        # Set categorical ordering
+        df[y_conditions] = pd.Categorical(df[y_conditions], categories=solvent_order, ordered=True)
+        df[x_conditions] = pd.Categorical(df[x_conditions], categories=condition_order, ordered=True) #sets both columns to be categorical
+
+        # Group and average numeric values
+        grouped = df.groupby([y_conditions, x_conditions]).mean(numeric_only=True).reset_index() # groups by specific columns and averages numeric data
+
+        # Pivot for each component --
+        
+        pivots = {var: grouped.pivot(index=y_conditions, columns=x_conditions, values=var).fillna(0) for var in variables}
+        
+        # Build matrix of pie chart slices
+        data = [[tuple(pivots[var].loc[y_val, x_val] for var in variables)
+                for x_val in condition_order]
+                for y_val in solvent_order]
+
+        # Dynamic sizing
+        n_rows = len(solvent_order) # size by number of solvents
+        n_cols = len(condition_order) # size by conditions
+
+        fig, axs = plt.subplots(nrows=n_rows, ncols=n_cols, figsize=(14, 14))
+        
+        def custom_autopct(pct):
+            return f'{pct:.1f}%' if pct > 0 else ''
+        
+        
+        # Generate pie charts and label pie segments (if you've checked labels)
+        for i in range(n_rows):
+            for j in range(n_cols):
+                ax = axs[i, j]
+                entry = data[i][j]
+                if isinstance(entry, tuple) and any(pd.notna(val) and val > 0 for val in entry):
+                    
+                    if labels:
+                        wedges, texts, autotexts = ax.pie(
+                        entry,
+                        colors=colours,
+                        startangle=90,
+                        counterclock=False,
+                        wedgeprops={'linewidth': 0.5},
+                        autopct=custom_autopct,
+                        #radius = 1.3,
+                        #pctdistance=0.6
+                        )
+                    else:
+                        wedges, texts = ax.pie(
+                            entry,
+                            colors=colours,
+                            startangle=90,
+                            counterclock=False,
+                            wedgeprops={'linewidth': 0.5},
+                            autopct=None
+                        )
+                        autotexts = []
+                    
+                    
+
+                for value, text in zip(entry, autotexts):
+                    text.set_fontsize(label_size)
+
+                    if value < 15:
+                        x, y = text.get_position()
+                        text.set_position((x * 2.3, y * 2.3))
+                        text.set_ha("center")
+                        text.set_color("black")
+
+                        ax.annotate(
+                            '', xy=(x, y), xytext=(x * 1.9, y * 1.9),
+                            arrowprops=dict(arrowstyle='-', color='black', lw=0.5)
+                        )
+                    else:
+                        pass
+                
+                else:
+                    ax.set_facecolor('#f0f0f0')
+                ax.set(aspect='equal')
+                ax.axis('off')
+                                
+
+        # Label columns and rows
+        for j, condition in enumerate(condition_order):
+            axs[0, j].set_title(condition, fontsize=size_label, pad=dis)
+
+        for i, solvent in enumerate(solvent_order):
+            axs[i, 0].annotate(solvent, xy=(-0.4, 0.5), xycoords='axes fraction',
+                            ha='right', va='center', fontsize=size_label)
+
+        plt.tight_layout()
+        plt.subplots_adjust(left=0.15, top=0.92, bottom=0.08)
+        plt.suptitle(title, fontsize=title_size) # make an input for this
+        
+        
+        # Add legend
+        fig.legend(variables, loc='lower center', bbox_to_anchor=(0.5, pad), ncol=3, fontsize=legend_size, frameon=False)
+
+        st.pyplot(fig)
+        
+    else:
+        pass
 
 st.write('Want to generate LC data table? Click below')
 
@@ -828,6 +1059,7 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
 
