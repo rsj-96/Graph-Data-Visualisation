@@ -814,12 +814,13 @@ elif graph == 'Reaction Screen Pie Chart - Impurities Combined':
 else: # graph == 'HTS Pie Chart'
 
     data = {
-            "Conditions": ['Ethanol, xx (5 eq).', 'Me-THF, xx (5 eq.)', 'Toluene, xx (5 eq.)'],
-            "SM": [10, 50, 80],
-            'Product' : [70, 40, 10],
-            'Imp 1' : [5, 3, 10],
-            'Imp 2' : [15, 7, 0],
-        }  # Random data that can be replaced -- NEED TO CHANGE THE TEMPLATE FOR THIS --
+            "SM": [5.43, 8.57, 14.49, 1.25, 5.77, 12.95, 0.48, 5.17, 15.53, 0.48, 5.49, 13.94],
+            'Product' : [89.62, 86.65, 81.51, 94.29, 90.41, 84.33, 94.68, 89.49, 81.6, 90.42, 88.17, 80.66],
+            'Imp 1' : [2.69, 2.92, 2.2, 2.1, 2.13, 1.22, 1.96, 1.43, 0.74, 0.9, 0.17, 0.11],
+            'Imp 2' : [1.24, 1.09, 0.94, 1.03, 1.16, 1.1, 1.14, 3.59, 0.99, 1.13, 1.1, 0.95],
+            'x-Conditions' : [1.5 h, 1.5 h, 1.5 h, 3.5 h, 3.5 h, 3.5 h, 5.5 h, 5.5 h, 5.5 h, 24 h, 24 h, 24 h]
+            'y-Conditions' : [2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base]
+        }  # Random data that can be replaced 
     
     excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
 
@@ -842,7 +843,12 @@ else: # graph == 'HTS Pie Chart'
     
     with st.expander("How to Use📝"): 
         st.markdown('''
-                1.	upload
+                1.	Upload Excel file to file uploader.
+                2.  Use dropdown boxes to select columns to be plotted, and columns not selected in the dropdown boxes with automatically be combined and plotted as 'Others'.
+                3.  Select x and y conditions.
+                4.  Customise plot with title (if required), font szie, legend positioning and value labelling.
+                5.  Wait for plot to be generated.
+                6.  Any questions speak with RJ.
 
                 ''')
     
@@ -1059,6 +1065,7 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
 
