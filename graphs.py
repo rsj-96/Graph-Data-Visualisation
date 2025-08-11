@@ -818,8 +818,8 @@ else: # graph == 'HTS Pie Chart'
             'Product' : [89.62, 86.65, 81.51, 94.29, 90.41, 84.33, 94.68, 89.49, 81.6, 90.42, 88.17, 80.66],
             'Imp 1' : [2.69, 2.92, 2.2, 2.1, 2.13, 1.22, 1.96, 1.43, 0.74, 0.9, 0.17, 0.11],
             'Imp 2' : [1.24, 1.09, 0.94, 1.03, 1.16, 1.1, 1.14, 3.59, 0.99, 1.13, 1.1, 0.95],
-            'x-Conditions' : [1.5 h, 1.5 h, 1.5 h, 3.5 h, 3.5 h, 3.5 h, 5.5 h, 5.5 h, 5.5 h, 24 h, 24 h, 24 h]
-            'y-Conditions' : [2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base, 2.3 eq Base, 1.5 eq Base, 1.1 eq Base]
+            'x-Conditions' : ['1.5 h', '1.5 h', '1.5 h', '3.5 h', '3.5 h', '3.5 h', '5.5 h', '5.5 h', '5.5 h', '24 h', '24 h', '24 h']
+            'y-Conditions' : ['2.3 eq Base', '1.5 eq Base', '1.1 eq Base', '2.3 eq Base', '1.5 eq Base', '1.1 eq Base', '2.3 eq Base', '1.5 eq Base', '1.1 eq Base', '2.3 eq Base', '1.5 eq Base', '1.1 eq Base']
         }  # Random data that can be replaced 
     
     excel_template = pd.DataFrame(data) # transformation of the data dictionary to a pandas data frame
@@ -1065,6 +1065,7 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
 
