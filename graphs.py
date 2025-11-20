@@ -1060,7 +1060,7 @@ else: # graph == 'HTS Pie Chart'
     
             st.pyplot(fig)
         
-    except Exception as e:
+        except Exception as e:
             st.error(f"An error occurred: {e}")
             st.stop()
 
@@ -1081,6 +1081,7 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
 
