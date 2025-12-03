@@ -273,6 +273,7 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
             st.subheader("Customise Plot Labelling")
             
             x_axis = st.text_input('Enter x-axis Label', 'Conditions') # collects user inputs for labels using streamlit widget
+            y_axis = st.text_input('Enter y-axis Label', 'LCAP / %')
                
             title = st.text_input('Enter chart title', 'Reaction Screen of XX') # collects user inputs for title using streamlit widget
             
@@ -331,7 +332,7 @@ elif   graph =='Reaction Screen Bar Chart - Specific':
     
                 df.plot.bar(x='Conditions', stacked=True, color=colours)
                 plt.xlabel(x_axis, fontproperties=font_prop)
-                plt.ylabel('LCAP / %', fontproperties=font_prop)
+                plt.ylabel(y_axis, fontproperties=font_prop)
                 plt.xticks(fontproperties=font_prop)
                 plt.yticks(fontproperties=font_prop)
                 plt.legend(loc='upper left', bbox_to_anchor=(1,1), prop=font_prop, labels=legend)
@@ -1081,6 +1082,7 @@ st.markdown("""
         </button>
     </a>
 """, unsafe_allow_html=True)
+
 
 
 
