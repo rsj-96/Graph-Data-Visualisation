@@ -599,14 +599,28 @@ elif graph == 'Line Plot':
             if limits:
                 col1, col2 = st.columns([1,1])
                 with col1: 
-                    limit_one = st.number_input('Insert lower limit', value=None, placeholder="Type a number...")
+                    limit_one = st.number_input('Insert lower y-axis limit', value=None, placeholder="Type a number...")
                 with col2:
-                    limit_two = st.number_input('Insert upper limit', value=None, placeholder="Type a number...")
+                    limit_two = st.number_input('Insert upper y_axis limit', value=None, placeholder="Type a number...")
                     
                 y_limits = (limit_one, limit_two)
             
             else:
                 y_limits = None
+                
+            x_limits = st.checkbox('Define x-axis limits?')
+            
+            if x_limits:
+                col1, col2 = st.columns([1,1])
+                with col1: 
+                    limit_one_x = st.number_input('Insert lower x-axis limit', value=None, placeholder="Type a number...")
+                with col2:
+                    limit_two_x = st.number_input('Insert upper x-axis limit', value=None, placeholder="Type a number...")
+                    
+                x_limit = (limit_one_x, limit_two_x)
+            
+            else:
+                x_limit = None
     
             if not df.empty:
                
@@ -619,7 +633,7 @@ elif graph == 'Line Plot':
                 st.write('Preview of Data for Time Course Plot') # Change as needed
                 st.write(df.head())
                 
-                
+                              
                 df.plot.line(x=x_val, y= variables_updated, color = colours, figsize=(a,b))
                 plt.xlabel(x_axis, fontproperties=font_prop, fontsize=x_size)
                 plt.ylabel(y_axis, fontproperties=font_prop, fontsize=y_size)
@@ -631,6 +645,9 @@ elif graph == 'Line Plot':
                 
                 if y_limits:
                     plt.ylim(y_limits)
+                    
+                if x_limit:
+                    plt.xlim(x_limit)
                 
                 st.pyplot(plt.gcf()) # plots the line plot
     
