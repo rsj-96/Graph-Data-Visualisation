@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import seaborn as sns
 import os
+import matplotlib.dates as mdates
+import datetime
 #import math
 
 #st.write(print(os.getcwd())) # finds files path of repository
@@ -26,6 +28,7 @@ st.markdown('''
 
 font_path = "/mount/src/solubility-graphs/GOTHIC.TTF"
 font_prop = fm.FontProperties(fname=font_path)
+##font_prop = 'Arial'
 
 # Apply the font globally for all plots
 plt.rcParams['font.family'] = font_prop.get_name()
@@ -621,20 +624,41 @@ elif graph == 'Line Plot':
             
             else:
                 x_limit = None
+                
+            time_axis = st.checkbox('Set Time interval?')
+            
+            if time_axis:
+                
+                interval_time = st.number_input('Input time interval', value=30)
+                
     
             if not df.empty:
                
                 variables_updated = [var for var in variables if var in df.columns]
                 #legend_updated = [var for var in variables_updated]
-            
+                
                 selected_columns = [x_val] + variables_updated
-                df = df[selected_columns] 
+                df = df[selected_columns]
+                
+                if time_axis:
+                    if isinstance(df[x_val].iloc[0], datetime.time):
+                        df[x_val] = df[x_val].apply(
+                            lambda t: datetime.datetime.combine(datetime.date.today(), t)
+                        )
+                    else:
+                        df[x_val] = pd.to_datetime(df[x_val])
                 
                 st.write('Preview of Data for Time Course Plot') # Change as needed
                 st.write(df.head())
                 
                               
                 df.plot.line(x=x_val, y= variables_updated, color = colours, figsize=(a,b))
+                
+                if time_axis:
+                    ax = plt.gca()
+                    ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=interval_time))
+                    ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+                
                 plt.xlabel(x_axis, fontproperties=font_prop, fontsize=x_size)
                 plt.ylabel(y_axis, fontproperties=font_prop, fontsize=y_size)
                 plt.xticks(fontproperties=font_prop, rotation=rot, fontsize= tick_size)
