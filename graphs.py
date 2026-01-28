@@ -630,7 +630,15 @@ elif graph == 'Line Plot':
             if time_axis:
                 
                 interval_time = st.number_input('Input time interval', value=30)
+            
+            time_limits = st.checkbox('Set Time-axis limits?')
                 
+            if time_limits:
+                col1, col2 = st.columns(2)
+                with col1:
+                    time_start = st.time_input("Start time")
+                with col2:
+                    time_end = st.time_input("End time")
     
             if not df.empty:
                
@@ -666,6 +674,12 @@ elif graph == 'Line Plot':
                 plt.legend(loc='upper left', bbox_to_anchor=(1,1), labels=legend_updated, fontsize=leg_size)
                 plt.title(plot_title, fontproperties=font_prop, fontsize= title_siz) 
                 
+                if time_limits and time_start and time_end:
+                    base_date = df[x_val].iloc[0].date()
+
+                    x_start = datetime.datetime.combine(base_date, time_start)
+                    x_end   = datetime.datetime.combine(base_date, time_end)
+                    plt.xlim(x_start, x_end)
                 
                 if y_limits:
                     plt.ylim(y_limits)
