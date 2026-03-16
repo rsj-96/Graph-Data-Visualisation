@@ -53,7 +53,9 @@ Each graph type has instructions of how to use them on the [graph visualiser pag
 5. Customise number of variables, labels, colours, font sizes etc.
 6. Graph will be generated from results.
 
- 
+Below are more in depth step by step instructions for each graph type.
+
+## Section in progress 
 
 
 
